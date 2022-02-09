@@ -1,11 +1,11 @@
 #ifndef AF8594C8_ECCA_4DA7_8AE9_2951502DCF54
 #define AF8594C8_ECCA_4DA7_8AE9_2951502DCF54
 
-class StopButton{
+class Button{
 
     public:
-        StopButton();
-        ~StopButton();
+        Button();
+        ~Button();
 
         void read();
         bool state();

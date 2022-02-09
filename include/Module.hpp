@@ -1,10 +1,10 @@
 #ifndef AEDE749B_8240_4CFB_8C20_3850DA287764
 #define AEDE749B_8240_4CFB_8C20_3850DA287764
-class Disk{
+class Module{
 
     public:
 
-        static enum position{
+        enum position{
             COLLECTION,
             HALL_SENSOR,
             COLOR_SENSOR,
@@ -12,8 +12,8 @@ class Disk{
             LAST,
         };
 
-        Disk();
-        ~Disk();
+        Module();
+        ~Module();
 
         void move_to(position desired_pos);
         void calibrate();
@@ -25,6 +25,6 @@ class Disk{
 
         float position_deg;
 
-}
+};
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */
