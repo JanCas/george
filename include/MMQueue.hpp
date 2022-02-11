@@ -4,8 +4,8 @@
 class Queue{
 
     public:
-        Queue(int max_queue_size);
-        ~Queue();
+        MMQueue(int max_queue_size);
+        ~MMQueue();
 
         /**
          * @brief 
