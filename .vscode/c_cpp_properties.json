@@ -10,6 +10,8 @@
             "includePath": [
                 "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/include",
                 "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/src",
+                "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Encoder",
+                "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Encoder/utility",
                 "C:/Users/janlc/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "C:/Users/janlc/.platformio/packages/framework-arduino-avr/variants/mega",
                 "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
@@ -24,6 +26,8 @@
                 "path": [
                     "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/include",
                     "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/src",
+                    "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Encoder",
+                    "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Encoder/utility",
                     "C:/Users/janlc/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "C:/Users/janlc/.platformio/packages/framework-arduino-avr/variants/mega",
                     "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",

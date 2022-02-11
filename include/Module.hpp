@@ -7,14 +7,6 @@ class Module{
 
     public:
 
-        enum position{
-            COLLECTION,
-            HALL_SENSOR,
-            COLOR_SENSOR,
-            TRASH,
-            LAST,
-        };
-
         enum status{
             RUNNING,
             STOPPED
@@ -23,18 +15,14 @@ class Module{
         Module();
         ~Module();
 
-        void move_to(position desired_pos);
         void calibrate();
         void stop();
 
     private:
 
-        position current_position;
         status curr_status;
 
-        float position_deg;
-
-        ColorSensor.colors target_color;
+        COLORS target_color; 
 
 };
 

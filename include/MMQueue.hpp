@@ -1,7 +1,7 @@
 #ifndef BD9F70C2_485C_4D44_9E82_7E4C03E7027D
 #define BD9F70C2_485C_4D44_9E82_7E4C03E7027D
 
-class Queue{
+class MMQueue{
 
     public:
         MMQueue(int max_queue_size);
@@ -22,6 +22,6 @@ class Queue{
         int max_queue_size;
 
 
-}
+};
 
 #endif /* BD9F70C2_485C_4D44_9E82_7E4C03E7027D */

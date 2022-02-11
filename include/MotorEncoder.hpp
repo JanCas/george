@@ -1,6 +1,8 @@
 #ifndef BADE85DE_23EB_439C_B233_928A4F2E5B39
 #define BADE85DE_23EB_439C_B233_928A4F2E5B39
 
+#include "Encoder.h"
+
 class MotorEncoder{
 
     public:
@@ -15,6 +17,7 @@ class MotorEncoder{
     private:
 
         float position;
+        Encoder encoder;
 
 };
 

@@ -12,7 +12,7 @@ class Button{
 
     private:
 
-        bool state;
+        bool state; // true if pressed false if not
 
 };
 
