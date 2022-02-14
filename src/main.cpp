@@ -1,35 +1,42 @@
 #include <Arduino.h>
+#include "MotorEncoder.hpp"
 
-int switch_pin = A0;
-int enA = 12;
-int in1 = 10;
-int in2 = 11;
-
+MotorEncoder motor_encoder(12, 10, 11, 20, 52, 21, 53);
+int speed = 0;
 
 void setup() {
-  // put your setup code here, to run once:
-  pinMode(switch_pin, INPUT);
-  pinMode(enA, OUTPUT);
-  pinMode(in1, OUTPUT);
-  pinMode(in2, OUTPUT);
-
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
+  motor_encoder.set_speed(speed);
+  motor_encoder.turn_on();
 
   Serial.begin(9600);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  // int button_state = analogRead(switch_pin);
+  if (Serial.available() > 0){
+    int incoming = Serial.read();
+    Serial.println(incoming);
 
-  int button_state=1023;
-
-  //switch is off motor should stop
-  if (button_state < 1000){
-    analogWrite(enA, 0);
-  }else{
-    analogWrite(enA, 200);
+    switch (incoming){
+      case 97: // letter a
+        motor_encoder.cw();
+        break;
+      case 100: // Letter d
+        motor_encoder.ccw();
+        break;
+      case 119: // letter w
+        speed = motor_encoder.set_speed(speed + 20);
+        break;
+      case 115: // letter s
+        speed = motor_encoder.set_speed(speed - 20);
+        break;
+      case 114: // letter r
+        motor_encoder.write(0);
+        break;
+    }
   }
 
+  Serial.print("encoder A: ");
+  Serial.print(motor_encoder.encoder_a_count());
+  Serial.print(" || encoder B: ");
+  Serial.println(motor_encoder.encoder_b_count());
 }
