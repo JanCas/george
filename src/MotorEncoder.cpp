@@ -24,7 +24,8 @@ MotorEncoder::~MotorEncoder() {
 }
 
 void MotorEncoder::reset() {
-    
+    this->encoder_a->write(0);
+    this->encoder_b->write(0);    
 }
 
 void MotorEncoder::turn_on() {
@@ -43,7 +44,6 @@ int MotorEncoder::set_speed(int speed) {
 }
 
 void MotorEncoder::turn_off() {
-    this->speed = 0;
     analogWrite(this->ena_pin, 0);
 }
 
@@ -67,14 +67,15 @@ void MotorEncoder::ccw(){
     digitalWrite(this->in2_pin, LOW);
 }
 
-int MotorEncoder::encoder_a_count(){
+long MotorEncoder::encoder_a_count(){
     return this->encoder_a->read();
 }
 
-int MotorEncoder::encoder_b_count(){
+long MotorEncoder::encoder_b_count(){
     return this->encoder_b->read();
 }
 
 void MotorEncoder::write(int pos){
     this->encoder_a->write(pos);
+    //TODO: this is not done yet
 }
