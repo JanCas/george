@@ -19,6 +19,7 @@ class Disk{
         ~Disk();
 
         void move_to(position des_position);
+        void move_to_next();
         
 
     private:

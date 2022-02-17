@@ -15,10 +15,9 @@ class MMQueue{
          * @return true if the queue is not full
          * @return false if the queue is full
          */
-        bool check();
+        bool is_full();
 
     private:
-        int num_mm;
         int max_queue_size;
 
 
