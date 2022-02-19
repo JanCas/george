@@ -48,20 +48,23 @@ void Module::step() {
         
     }
 
+    if (disk->move_to_next()){
+        // the disk has arrived at the next position and the checking can begin
+    }
 }
 
-bool Module::check_downstream(){
+// bool Module::check_downstream(){
 
-}
+// }
 
 void Module::send_upstream(bool pause){
 
 }
 
-bool Module::is_hand(){
+// bool Module::is_hand(){
 
-}
+// }
 
-bool Module::e_stop(){
+// bool Module::e_stop(){
 
-}
+// }

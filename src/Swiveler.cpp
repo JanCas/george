@@ -7,13 +7,13 @@ Swiveler::Swiveler(int servo_pin) {
 }
 
 Swiveler::~Swiveler() {
-    //servo->detach();
+    servo->detach();
 }
 
 void Swiveler::move_to(position_enum desired_pos) {
     switch (desired_pos) {
         case CLOSED:
-            servo->write(1);
+            servo->write(45);
             break;
     
         case BUCKET:
@@ -21,19 +21,7 @@ void Swiveler::move_to(position_enum desired_pos) {
             break;
 
         case NEXT_MODULE:
-            servo->write(179);
+            servo->write(135);
             break;
-    }
-}
-
-void Swiveler::sweep(){
-    for (int i =0; i < 180; i++){
-        servo->write(i);
-        delay(15);
-    }
-
-    for (int i = 180; i > 0; i--){
-        servo->write(i);
-        delay(15);
     }
 }

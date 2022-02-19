@@ -15,14 +15,18 @@ class Disk{
             LAST,
         };
 
-        Disk();
+        Disk(MotorEncoder *motor);
         ~Disk();
 
-        void move_to(position des_position);
-        void move_to_next();
+        bool move_to_next();
+        void pause();
         
 
     private:
+
+        void move_to(position des_position);
+
+        bool running;
 
         position curr_position;
 

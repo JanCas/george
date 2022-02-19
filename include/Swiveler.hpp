@@ -18,8 +18,6 @@ class Swiveler{
 
         void move_to(position_enum desired_pos);
 
-        void sweep();
-
     private:
         position_enum position;
 
