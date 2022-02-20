@@ -2,18 +2,26 @@
 #include <Arduino.h>
 
 Swiveler::Swiveler(int servo_pin) {
+    pin_num = servo_pin;
     servo = new Servo();
-    servo->attach(servo_pin);
+}
+
+void Swiveler::init(){
+    servo->attach(pin_num);
 }
 
 Swiveler::~Swiveler() {
     servo->detach();
+    delete servo;
 }
 
 void Swiveler::move_to(position_enum desired_pos) {
+    
+    position = desired_pos;
+    
     switch (desired_pos) {
         case CLOSED:
-            servo->write(45);
+            servo->write(0);
             break;
     
         case BUCKET:
@@ -21,7 +29,7 @@ void Swiveler::move_to(position_enum desired_pos) {
             break;
 
         case NEXT_MODULE:
-            servo->write(135);
+            servo->write(180);
             break;
     }
 }

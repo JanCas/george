@@ -17,10 +17,11 @@ class Swiveler{
         ~Swiveler();
 
         void move_to(position_enum desired_pos);
+        void init();
 
     private:
+        int pin_num;
         position_enum position;
-
         Servo *servo;
         
 };

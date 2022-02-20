@@ -1,23 +1,25 @@
 #include <Arduino.h>
 
 #include "Swiveler.hpp"
-#include "avr8-stub.h"
 
-Swiveler swiveler(7);
+Swiveler *swiveler = new Swiveler(7);
+int i = 0;
 
 void setup() {
-    
-    debug_init();
+    Serial.begin(9600);
+    swiveler->init();
 }
 
 void loop() {
-    breakpoint();
     position_enum possible[] = {CLOSED, BUCKET, NEXT_MODULE};
-    
-    for(position_enum pos : possible){
-        breakpoint();
-        swiveler.move_to(pos);
-        delay(500);
-    }
 
+
+    for (position_enum pos : possible)
+    {
+        Serial.print("Moving to: ");
+        Serial.println(pos);
+        swiveler->move_to(pos);
+        Serial.println();
+        delay(2000);
+    }
 }
