@@ -15,7 +15,7 @@ Swiveler::~Swiveler() {
     delete servo;
 }
 
-void Swiveler::move_to(position_enum desired_pos) {
+void Swiveler::move_to(swiveler_position_enum desired_pos) {
     
     position = desired_pos;
     

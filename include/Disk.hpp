@@ -3,7 +3,7 @@
 
 #include "MotorEncoder.hpp"
 
-enum position{
+enum disk_position_enum{
     COLLECTION = 0,
     HALL_SENSOR = 72,
     COLOR_SENSOR = 144,
@@ -23,12 +23,12 @@ class Disk{
 
     private:
 
-        void move_to(position des_position);
+        void move_to(disk_position_enum des_position);
 
         bool running;
 
-        position curr_position;
-        position next_position;
+        disk_position_enum curr_position;
+        disk_position_enum next_position;
 
         float position_deg;
 

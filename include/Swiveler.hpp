@@ -4,7 +4,7 @@
 #include <Servo.h>
 
 
-enum position_enum{
+enum swiveler_position_enum{
     CLOSED,
     BUCKET,
     NEXT_MODULE,
@@ -16,12 +16,12 @@ class Swiveler{
         Swiveler(int servo_pin);
         ~Swiveler();
 
-        void move_to(position_enum desired_pos);
+        void move_to(swiveler_position_enum desired_pos);
         void init();
 
     private:
         int pin_num;
-        position_enum position;
+        swiveler_position_enum position;
         Servo *servo;
         
 };

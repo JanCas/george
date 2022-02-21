@@ -23,6 +23,7 @@ MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_
 
     this->speed = 0;
     deg_per_count =(float) (360.0 / (count*gear_ratio*pulse_count));
+    direction_clockwise = true;
 }
 
 MotorEncoder::~MotorEncoder() {
@@ -42,6 +43,11 @@ void MotorEncoder::turn_on() {
 int MotorEncoder::set_speed(int speed) {
     speed = normalize_speed(speed);
 
+    if (speed < 0){
+        flip_direction();
+        speed = abs(speed);
+    }
+
     this->speed = speed;
 
     analogWrite(this->ena_pin, speed);
@@ -57,8 +63,8 @@ void MotorEncoder::turn_off() {
 int MotorEncoder::normalize_speed(int speed) {
     if (speed > 255){
         return 255;
-    }else if (speed < 0){
-        return 0;
+    }else if (speed < -255){
+        return -255;
     }
 
     return speed;
@@ -76,4 +82,14 @@ void MotorEncoder::ccw(){
 
 float MotorEncoder::get_pos(){
     return deg_per_count * encoder_a->read();
+}
+
+void MotorEncoder::flip_direction(){
+    if (direction_clockwise){
+        direction_clockwise = false;
+        ccw();
+    } else {
+        direction_clockwise = true;
+        cw();
+    }
 }

@@ -60,6 +60,8 @@ class MotorEncoder{
          */
         float get_pos();
 
+        void flip_direction();
+
 
     private:
 
@@ -70,6 +72,8 @@ class MotorEncoder{
         int gear_ratio;
         int count;
         int pulse_count; // would be 4 for a quadrature encoder
+
+        bool direction_clockwise;
 
         float deg_per_count;
 

@@ -9,7 +9,7 @@ Disk::~Disk() {
     delete motor;
 }
 
-void Disk::move_to(position des_position) {
+void Disk::move_to(disk_position_enum des_position) {
     
 }
 
