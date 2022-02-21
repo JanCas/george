@@ -19,8 +19,7 @@ class Disk{
         ~Disk();
 
         bool move_to_next();
-        void pause();
-        
+        void pause(); 
 
     private:
 

@@ -1,10 +1,16 @@
 #include "MotorEncoder.hpp"
 
 
-MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_pin1, int encoder_a_pin2, int encoder_b_pin1, int encoder_b_pin2) {
+MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_pin1, int encoder_a_pin2, int encoder_b_pin1, int encoder_b_pin2,
+                            int gear_ratio, int count, int pulse_count) {
     this->ena_pin = ena_pin;
     this->in1_pin = in1_pin;
     this->in2_pin = in2_pin;
+    this->gear_ratio = gear_ratio;
+    this->count = count;
+    this->pulse_count = pulse_count;
+
+
     this->encoder_a = new Encoder(encoder_a_pin1, encoder_a_pin2);
     this->encoder_b = new Encoder(encoder_b_pin1, encoder_b_pin2);
 
@@ -15,7 +21,8 @@ MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_
     digitalWrite(this->in1_pin, HIGH);
     digitalWrite(this->in2_pin, LOW);
 
-    this->speed = 0;    
+    this->speed = 0;
+    deg_per_count =(float) (360.0 / (count*gear_ratio*pulse_count));
 }
 
 MotorEncoder::~MotorEncoder() {
@@ -67,15 +74,6 @@ void MotorEncoder::ccw(){
     digitalWrite(this->in2_pin, LOW);
 }
 
-long MotorEncoder::encoder_a_count(){
-    return this->encoder_a->read();
-}
-
-long MotorEncoder::encoder_b_count(){
-    return this->encoder_b->read();
-}
-
-void MotorEncoder::write(int pos){
-    this->encoder_a->write(pos);
-    //TODO: this is not done yet
+float MotorEncoder::get_pos(){
+    return deg_per_count * encoder_a->read();
 }

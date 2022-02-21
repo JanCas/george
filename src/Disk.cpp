@@ -13,9 +13,9 @@ void Disk::move_to(position des_position) {
     
 }
 
-// bool Disk::move_to_next() {
-    // 
-// }
+bool Disk::move_to_next() {
+    
+}
 
 void Disk::pause() {
     

@@ -1,25 +1,19 @@
 #include <Arduino.h>
 
-#include "Swiveler.hpp"
+// #include "cppQueue.h"
+#include "Module.hpp"
+#include "MotorEncoder.hpp"
 
-Swiveler *swiveler = new Swiveler(7);
-int i = 0;
+
+MotorEncoder motor_encoder(12, 11, 10, 20, 21, 20, 53, 380, 12, 1);
+// cppQueue *queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
 
 void setup() {
     Serial.begin(9600);
-    swiveler->init();
+    motor_encoder.set_speed(130);
+    motor_encoder.turn_on();
 }
 
 void loop() {
-    position_enum possible[] = {CLOSED, BUCKET, NEXT_MODULE};
-
-
-    for (position_enum pos : possible)
-    {
-        Serial.print("Moving to: ");
-        Serial.println(pos);
-        swiveler->move_to(pos);
-        Serial.println();
-        delay(2000);
-    }
+    Serial.println(motor_encoder.get_pos());
 }

@@ -17,7 +17,7 @@ class MotorEncoder{
         * @param encoder_b_pin1 should be interrupt enabled
         * @param encoder_b_pin2 
         */
-        MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_pin1, int encoder_a_pin2, int encoder_b_pin1, int encoder_b_pin2);
+        MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_pin1, int encoder_a_pin2, int encoder_b_pin1, int encoder_b_pin2, int gear_ratio, int count, int pulse_count);
         ~MotorEncoder();
 
         /**
@@ -55,25 +55,10 @@ class MotorEncoder{
         void ccw();
 
         /**
-         * @brief gets the count from the A encocder 
-         * 
-         * @return long 
+         * @brief Get the position of the motor in degrees
+         * @return float position of motor in degrees 
          */
-        long encoder_a_count();
-
-        /**
-         * @brief gets the count from the B encoder
-         * 
-         * @return long 
-         */
-        long encoder_b_count();
-
-        /**
-         * @brief sends the motor encoder to a specific condition
-         * 
-         * @param pos position to send the motor to in degrees 
-         */
-        void write(int pos);
+        float get_pos();
 
 
     private:
@@ -81,6 +66,12 @@ class MotorEncoder{
         int ena_pin;
         int in1_pin;
         int in2_pin;
+
+        int gear_ratio;
+        int count;
+        int pulse_count; // would be 4 for a quadrature encoder
+
+        float deg_per_count;
 
         int speed;
 

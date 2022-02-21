@@ -25,6 +25,10 @@ void Module::calibrate() {
     // all the calibration code    
 }
 
+void Module::init(){
+    swively->init();
+}
+
 void Module::pause() {
 
 }

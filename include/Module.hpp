@@ -9,10 +9,10 @@
 #include "Dashboard.hpp"
 #include <cppQueue.h>
 
-typedef struct {
+struct mm_attr{
     bool metal;
     bool right_color;
-} mm_attr;
+};
 
 class Module{
 
@@ -23,6 +23,7 @@ class Module{
 
         void calibrate();
         void step();
+        void init();
 
     private:
 
