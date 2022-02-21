@@ -3,6 +3,7 @@
 // #include "cppQueue.h"
 #include "Module.hpp"
 #include "MotorEncoder.hpp"
+#include "Disk.hpp"
 
 
 MotorEncoder motor_encoder(12, 11, 10, 20, 21, 20, 53, 380, 12, 1);
