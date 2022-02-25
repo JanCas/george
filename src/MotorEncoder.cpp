@@ -1,8 +1,7 @@
 #include "MotorEncoder.hpp"
 
 
-MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_pin1, int encoder_a_pin2, int encoder_b_pin1, int encoder_b_pin2,
-                            int gear_ratio, int count, int pulse_count) {
+MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_pin1, int encoder_a_pin2, int gear_ratio, int count) {
     this->ena_pin = ena_pin;
     this->in1_pin = in1_pin;
     this->in2_pin = in2_pin;
@@ -12,7 +11,6 @@ MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_
 
 
     this->encoder_a = new Encoder(encoder_a_pin1, encoder_a_pin2);
-    this->encoder_b = new Encoder(encoder_b_pin1, encoder_b_pin2);
 
     pinMode(this->ena_pin, OUTPUT);
     pinMode(this->in1_pin, OUTPUT);
@@ -22,7 +20,7 @@ MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_
     digitalWrite(this->in2_pin, LOW);
 
     this->speed = 0;
-    deg_per_count =(float) (360.0 / (count*gear_ratio*pulse_count));
+    deg_per_count =(float) (360.0 / (count*gear_ratio));
     direction_clockwise = true;
 }
 

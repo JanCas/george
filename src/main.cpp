@@ -5,7 +5,7 @@
 #include "Disk.hpp"
 #include <PID_v1.h>
 
-MotorEncoder motor_encoder(12, 11, 10, 20, 21, 20, 53, 380, 12, 1);
+MotorEncoder motor_encoder(12, 11, 10, 20, 21, 380, 12, 1);
 
 unsigned long t_ms = 0;
 double Pos, Vel;
@@ -64,5 +64,5 @@ void setup()
 void loop()
 {
     Serial.println(motor_encoder.get_pos());
-    pid();
+    // pid();
 }

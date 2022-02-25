@@ -17,7 +17,7 @@ class MotorEncoder{
         * @param encoder_b_pin1 should be interrupt enabled
         * @param encoder_b_pin2 
         */
-        MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_pin1, int encoder_a_pin2, int encoder_b_pin1, int encoder_b_pin2, int gear_ratio, int count, int pulse_count);
+        MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_pin1, int encoder_a_pin2, int gear_ratio, int count);
         ~MotorEncoder();
 
         /**
