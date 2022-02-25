@@ -7,7 +7,6 @@ MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_
     this->in2_pin = in2_pin;
     this->gear_ratio = gear_ratio;
     this->count = count;
-    this->pulse_count = pulse_count;
 
 
     this->encoder_a = new Encoder(encoder_a_pin1, encoder_a_pin2);
@@ -71,11 +70,13 @@ int MotorEncoder::normalize_speed(int speed) {
 void MotorEncoder::cw(){
     digitalWrite(this->in1_pin, LOW);
     digitalWrite(this->in2_pin, HIGH);
+    direction_clockwise = true;
 }
 
 void MotorEncoder::ccw(){
     digitalWrite(this->in1_pin, HIGH);
     digitalWrite(this->in2_pin, LOW);
+    direction_clockwise = false;
 }
 
 float MotorEncoder::get_pos(){
@@ -84,10 +85,8 @@ float MotorEncoder::get_pos(){
 
 void MotorEncoder::flip_direction(){
     if (direction_clockwise){
-        direction_clockwise = false;
         ccw();
     } else {
-        direction_clockwise = true;
         cw();
     }
 }

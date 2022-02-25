@@ -9,6 +9,7 @@ enum disk_position_enum{
     COLOR_SENSOR = 144,
     TRASH = 216,
     LAST = 288,
+    END = 360
 };
 
 class Disk{

@@ -60,8 +60,14 @@ class MotorEncoder{
          */
         float get_pos();
 
-        void flip_direction();
-
+        /**
+         * @brief drives to a certain position in degrees [0 - 360]
+         * 
+         * @param degrees to drive to
+         * @return true motor is at that position
+         * @return false motor is still driving to position
+         */
+        bool drive_to(int degrees);
 
     private:
 
@@ -71,7 +77,6 @@ class MotorEncoder{
 
         int gear_ratio;
         int count;
-        int pulse_count; // would be 4 for a quadrature encoder
 
         bool direction_clockwise;
 
@@ -92,6 +97,11 @@ class MotorEncoder{
          */
         int normalize_speed(int speed);
 
+        /**
+         * @brief flips the direction of the motor
+         * 
+         */
+        void flip_direction();
 };
 
 #endif /* BADE85DE_23EB_439C_B233_928A4F2E5B39 */
