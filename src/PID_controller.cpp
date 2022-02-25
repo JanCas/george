@@ -5,14 +5,13 @@ PID_controller::PID_controller(double Kp, double Kd, double Ki, double step_time
     this->Kp = Kp;
     this->Kd = Kd;
     this->Ki = Ki;
-    this->step_time = step_time;
     this->step_size = step_size;
     this->alpha = alpha;
 }
 
 PID_controller::~PID_controller() {}
 
-double PID_controller::compute(float input, double desired){
+double PID_controller::compute(float input, double desired, int contraint){
     
     unsigned long t = micros() / 1000000.0; // current time
 
@@ -30,11 +29,7 @@ double PID_controller::compute(float input, double desired){
         error_old = error;
         t_old = t;
 
-        V = constrain(V, -10., 10.); // motor saturation
-        if (t > step_time)
-        {
-            V = 0;
-        }
-        return (400 * V / 10);
+        V = constrain(V, -1*contraint, contraint);
+        return V;
     }
 }

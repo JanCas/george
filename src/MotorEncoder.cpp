@@ -41,8 +41,10 @@ int MotorEncoder::set_speed(int speed) {
     speed = normalize_speed(speed);
 
     if (speed < 0){
-        flip_direction();
+        ccw();
         speed = abs(speed);
+    }else if (speed > 0){
+        cw();
     }
 
     this->speed = speed;
@@ -67,16 +69,20 @@ int MotorEncoder::normalize_speed(int speed) {
     return speed;
 }
 
-void MotorEncoder::cw(){
-    digitalWrite(this->in1_pin, LOW);
-    digitalWrite(this->in2_pin, HIGH);
-    direction_clockwise = true;
+void MotorEncoder::ccw(){
+    if (!direction_clockwise){
+        digitalWrite(this->in1_pin, LOW);
+        digitalWrite(this->in2_pin, HIGH);
+        direction_clockwise = true;
+    }
 }
 
-void MotorEncoder::ccw(){
-    digitalWrite(this->in1_pin, HIGH);
-    digitalWrite(this->in2_pin, LOW);
-    direction_clockwise = false;
+void MotorEncoder::cw(){
+    if (direction_clockwise){
+        digitalWrite(this->in1_pin, HIGH);
+        digitalWrite(this->in2_pin, LOW);
+        direction_clockwise = false;
+    }
 }
 
 float MotorEncoder::get_pos(){

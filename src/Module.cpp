@@ -54,6 +54,7 @@ void Module::step() {
 
     if (disk->move_to_next()){
         // the disk has arrived at the next position and the checking can begin
+        check_mm();
     }
 }
 
@@ -63,6 +64,58 @@ void Module::step() {
 
 void Module::send_upstream(bool pause){
 
+}
+
+void print_mm(mm_attr mm){
+    Serial.print(mm.metal);
+    Serial.print(" || ");
+    Serial.println(mm.right_color);
+}
+
+void Module::check_mm(){
+    mm_attr mm;
+
+    Serial.println("is it metal? ");
+    while (Serial.available() == 0){
+
+    }
+
+    char x = Serial.read();
+    if (x == 'y'){
+        mm.metal = true;
+    }
+    else if (x == 'n'){
+        mm.metal = false;
+    }
+    Serial.println("a new mm with determined metal value has been added to the queue");
+    mm_command_queue->push(&mm);
+
+    if (mm_command_queue->getCount() >= 1){
+        Serial.println("Is the mm the correct color");
+        mm_attr mm_at_color;
+        mm_command_queue->peek(&mm_at_color);
+
+        while (Serial.available() == 0){}
+
+        x = Serial.read();
+        if (x == 'y'){
+            mm_at_color.right_color = true;
+        }
+        else if (x == 'n'){
+            mm_at_color.right_color = false;
+        }
+    } 
+
+    if (mm_command_queue->getCount() == 2){
+        mm_attr return_mm;
+
+        if (mm_command_queue->pop(&return_mm)){
+            Serial.println("MM AT THE SWIVELER ------------");
+            print_mm(return_mm);
+            Serial.println("-------------------------------");
+        }
+    }
+    Serial.println();
 }
 
 // bool Module::is_hand(){

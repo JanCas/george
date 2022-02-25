@@ -9,7 +9,7 @@ class PID_controller{
         PID_controller(double Kp, double Kd, double Ki, double step_time, double step_size, double alpha);
         ~PID_controller();
 
-        double compute(float input, double desired);
+        double compute(float input, double desired, int contraint);
 
     private:
 
@@ -17,7 +17,6 @@ class PID_controller{
         double T_interval;
         double Kp, Kd, Ki;
         double error_old, dError_filt_old;
-        double step_time;
         double step_size;
         double alpha;
 };
