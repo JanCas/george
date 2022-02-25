@@ -17,15 +17,15 @@ void setup()
 }
 
 
-void print_mm(mm_attr *mm){
-    Serial.print(mm->metal);
+void print_mm(mm_attr mm){
+    Serial.print(mm.metal);
     Serial.print(" || ");
-    Serial.println(mm->right_color);
+    Serial.println(mm.right_color);
 }
 
 void loop()
 {
-    mm_attr *mm;
+    mm_attr mm;
 
     Serial.println("is it metal? ");
     while (Serial.available() == 0){
@@ -34,24 +34,40 @@ void loop()
 
     char x = Serial.read();
     if (x == 'y'){
-        mm->metal = true;
+        mm.metal = true;
     }
     else if (x == 'n'){
-        mm->metal = false;
+        mm.metal = false;
     }
-
     Serial.println("a new mm with determined metal value has been added to the queue");
-    queue.push(mm);
-    
-    Serial.println(queue.getCount());
+    queue.push(&mm);
+
+    if (queue.getCount() >= 1){
+        Serial.println("Is the mm the correct color");
+        mm_attr mm_at_color;
+        queue.peek(&mm_at_color);
+
+        while (Serial.available() == 0){}
+
+        x = Serial.read();
+        if (x == 'y'){
+            mm_at_color.right_color = true;
+        }
+        else if (x == 'n'){
+            mm_at_color.right_color = false;
+        }
+    } 
 
     if (queue.getCount() == 2){
-        mm_attr *return_mm;
+        mm_attr return_mm;
 
-        if (queue.pop(return_mm)){
+        if (queue.pop(&return_mm)){
+            Serial.println("MM AT THE SWIVELER ------------");
             print_mm(return_mm);
+            Serial.println("-------------------------------");
         }
     }
+    Serial.println();
     // Serial.println(motor_encoder.get_pos());
     // Serial.println(pid.compute(motor_encoder.get_pos(), 72));
 }
