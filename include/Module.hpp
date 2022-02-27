@@ -73,6 +73,18 @@ class Module{
          * @return false no there isnt a hand in the machine
          */
         bool is_hand();
+
+        /**
+         * @brief reads the hall sensor and the color position and adds the appropriate things to the queue
+         * 
+         */
+        void check_mm();
+
+        /**
+         * @brief sends the swiveler to the correct position based on the mm
+         * 
+         */
+        void move_swiveler(mm_attr mm_at_swiveler);
 };
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */

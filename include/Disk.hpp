@@ -3,17 +3,18 @@
 
 #include "MotorEncoder.hpp"
 
+enum disk_position_enum{
+    COLLECTION = 0,
+    HALL_SENSOR = 72,
+    COLOR_SENSOR = 144,
+    TRASH = 216,
+    LAST = 288,
+    END = 360
+};
+
 class Disk{
 
     public:
-
-        enum position{
-            COLLECTION,
-            HALL_SENSOR,
-            COLOR_SENSOR,
-            TRASH,
-            LAST,
-        };
 
         Disk(MotorEncoder *motor);
         ~Disk();
@@ -23,13 +24,13 @@ class Disk{
 
     private:
 
-        void move_to(position des_position);
+        bool move_to(disk_position_enum des_position);
+        void update_position(disk_position_enum pos);
 
         bool running;
 
-        position curr_position;
-
-        float position_deg;
+        disk_position_enum curr_position;
+        disk_position_enum next_position;
 
         MotorEncoder *motor;
 
