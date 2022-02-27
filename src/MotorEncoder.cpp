@@ -92,6 +92,11 @@ bool MotorEncoder::drive_to(int des_pos){
     double curr_pos = get_pos();
     double new_vel = pid_controller->compute(curr_pos, des_pos, speed);
     
+    Serial.print("pos: ");
+    Serial.print(curr_pos);
+    Serial.print(" || vel: ");
+    Serial.println(new_vel);
+
     set_speed((int) new_vel);
 
     if (abs(des_pos - curr_pos) < 1 && new_vel == 0){ // as long as the position is within one degree and the velocity is 0

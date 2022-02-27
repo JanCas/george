@@ -66,7 +66,7 @@ void Module::send_upstream(bool pause){
 
 }
 
-void print_mm(mm_attr mm){
+void Module::print_mm(mm_attr mm){
     Serial.print(mm.metal);
     Serial.print(" || ");
     Serial.println(mm.right_color);
@@ -113,6 +113,7 @@ void Module::check_mm(){
             Serial.println("MM AT THE SWIVELER ------------");
             print_mm(return_mm);
             Serial.println("-------------------------------");
+            move_swiveler(return_mm);
         }
     }
     Serial.println();

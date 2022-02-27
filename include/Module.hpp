@@ -85,6 +85,8 @@ class Module{
          * 
          */
         void move_swiveler(mm_attr mm_at_swiveler);
+
+        void print_mm(mm_attr mm);
 };
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */

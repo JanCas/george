@@ -14,7 +14,7 @@ class PID_controller{
     private:
 
         double t_old;
-        double T_interval;
+        double T_interval = .000001;
         double Kp, Kd, Ki;
         double error_old, dError_filt_old;
         double step_size;

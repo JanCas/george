@@ -70,6 +70,10 @@ class MotorEncoder{
          */
         bool drive_to(int degrees);
 
+        void set_init_speed(int speed){
+            this->speed = speed;
+        }
+
     private:
 
         int ena_pin;

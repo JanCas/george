@@ -17,8 +17,6 @@ Swiveler::~Swiveler() {
 
 void Swiveler::move_to(swiveler_position_enum desired_pos) {
     
-    position = desired_pos;
-    
     switch (desired_pos) {
         case CLOSED:
             servo->write(0);
@@ -32,4 +30,6 @@ void Swiveler::move_to(swiveler_position_enum desired_pos) {
             servo->write(180);
             break;
     }
+
+    position = desired_pos;
 }
