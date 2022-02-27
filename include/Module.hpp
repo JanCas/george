@@ -79,6 +79,12 @@ class Module{
          * 
          */
         void check_mm();
+
+        /**
+         * @brief sends the swiveler to the correct position based on the mm
+         * 
+         */
+        void move_swiveler(mm_attr mm_at_swiveler);
 };
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */

@@ -2,6 +2,7 @@
 #define BADE85DE_23EB_439C_B233_928A4F2E5B39
 
 #include "Encoder.h"
+#include "PID_controller.hpp"
 
 class MotorEncoder{
 
@@ -17,7 +18,7 @@ class MotorEncoder{
         * @param encoder_b_pin1 should be interrupt enabled
         * @param encoder_b_pin2 
         */
-        MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_a_pin1, int encoder_a_pin2, int gear_ratio, int count);
+        MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_pin1, int encoder_pin2, int gear_ratio, int count, PID_controller *pid_controller);
         ~MotorEncoder();
 
         /**
@@ -69,12 +70,6 @@ class MotorEncoder{
          */
         bool drive_to(int degrees);
 
-        /**
-         * @brief flips the direction of the motor
-         * 
-         */
-        void flip_direction();
-
     private:
 
         int ena_pin;
@@ -90,10 +85,8 @@ class MotorEncoder{
 
         int speed;
 
-        // position in degrees
-        float position;
-        Encoder *encoder_a;
-        Encoder *encoder_b;
+        Encoder *encoder;
+        PID_controller *pid_controller;
 
         /**
          * @brief normalizes the speed to make sure it doesnt go above 255 or below 0

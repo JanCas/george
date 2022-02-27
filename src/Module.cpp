@@ -118,6 +118,18 @@ void Module::check_mm(){
     Serial.println();
 }
 
+void Module::move_swiveler(mm_attr mm_at_swiveler){
+    if (mm_at_swiveler.metal){
+        swively->move_to(CLOSED);
+        return;
+    }
+    if (mm_at_swiveler.right_color){
+        swively->move_to(BUCKET);
+    } else {
+        swively->move_to(NEXT_MODULE);
+    }
+}
+
 // bool Module::is_hand(){
 
 // }

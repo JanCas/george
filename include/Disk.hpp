@@ -24,14 +24,13 @@ class Disk{
 
     private:
 
-        void move_to(disk_position_enum des_position);
+        bool move_to(disk_position_enum des_position);
+        void update_position(disk_position_enum pos);
 
         bool running;
 
         disk_position_enum curr_position;
         disk_position_enum next_position;
-
-        float position_deg;
 
         MotorEncoder *motor;
 
