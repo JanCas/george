@@ -74,6 +74,8 @@ class MotorEncoder{
             this->speed = speed;
         }
 
+        double pid_compute(int des, int contraint);
+
     private:
 
         int ena_pin;

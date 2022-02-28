@@ -105,3 +105,7 @@ bool MotorEncoder::drive_to(int des_pos){
 
     return false;
 }
+
+double MotorEncoder::pid_compute(int des_pos, int constraint){
+    return pid_controller->compute(get_pos(), des_pos, constraint);
+}
