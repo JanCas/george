@@ -85,9 +85,9 @@ class Module{
          * @brief sends the swiveler to the correct position based on the mm
          * 
          */
-        void move_swiveler(mm_attr mm_at_swiveler);
+        void move_swiveler(const mm_attr &mm_at_swiveler);
 
-        void print_mm(mm_attr mm);
+        void print_mm(const mm_attr &mm);
 };
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */

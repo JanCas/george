@@ -35,7 +35,7 @@ void MotorEncoder::turn_on() {
     analogWrite(this->ena_pin, this->speed);
 }
 
-int MotorEncoder::set_speed(int speed) {
+double MotorEncoder::set_speed(double speed) {
 
     if (speed < 0){
         ccw();
@@ -58,14 +58,8 @@ void MotorEncoder::turn_off() {
     analogWrite(this->ena_pin, 0);
 }
 
-int MotorEncoder::normalize_speed(int speed) {
-    if (speed > 255){
-        return 255;
-    }else if (speed < 0){
-        return 0;
-    }
-
-    return speed;
+double MotorEncoder::normalize_speed(double speed) {
+    return constrain(speed, -255, 255);
 }
 
 void MotorEncoder::ccw(){
@@ -92,14 +86,14 @@ bool MotorEncoder::drive_to(int des_pos){
     double curr_pos = get_pos();
     double new_vel = pid_controller->compute(curr_pos, des_pos, speed);
     
-    Serial.print("pos: ");
-    Serial.print(curr_pos);
-    Serial.print(" || vel: ");
-    Serial.println(new_vel);
+    // Serial.print("pos: ");
+    // Serial.print(curr_pos);
+    // Serial.print(" || vel: ");
+    // Serial.println(new_vel);
 
-    set_speed((int) new_vel);
+    set_speed(new_vel);
 
-    if (abs(des_pos - curr_pos) < 1 && new_vel == 0){ // as long as the position is within one degree and the velocity is 0
+    if (abs(des_pos - curr_pos) < 1 && abs(new_vel) < 3){ // as long as the position is within one degree and the abs(velocity) is less then 3 
         return true;
     }
 
@@ -108,4 +102,9 @@ bool MotorEncoder::drive_to(int des_pos){
 
 double MotorEncoder::pid_compute(int des_pos, int constraint){
     return pid_controller->compute(get_pos(), des_pos, constraint);
+}
+
+double MotorEncoder::set_init_speed(double speed){
+    this->speed = normalize_speed(speed);
+    return this->speed;
 }

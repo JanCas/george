@@ -38,7 +38,7 @@ class MotorEncoder{
          * @return int -> the speed it was set to (since the speed will be normalized in case of < 0
          *                                          or > 75)
          */
-        int set_speed(int speed);
+        double set_speed(double speed);
 
         /**
          * @brief turns off the motor (does not reset the speed variable)
@@ -70,9 +70,7 @@ class MotorEncoder{
          */
         bool drive_to(int degrees);
 
-        void set_init_speed(int speed){
-            this->speed = speed;
-        }
+        double set_init_speed(double speed);
 
         double pid_compute(int des, int contraint);
 
@@ -89,7 +87,7 @@ class MotorEncoder{
 
         float deg_per_count;
 
-        int speed;
+        double speed;
 
         Encoder *encoder;
         PID_controller *pid_controller;
@@ -100,7 +98,7 @@ class MotorEncoder{
          * @param speed 
          * @return int returns the normalized speed
          */
-        int normalize_speed(int speed);
+        double normalize_speed(double speed);
 
 
 };
