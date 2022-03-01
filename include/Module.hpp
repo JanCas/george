@@ -18,7 +18,7 @@ class Module{
 
     public:
 
-        Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, DashBoard *dash_board, Disk *disk);
+        Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, DashBoard *dash_board, Disk *disk, MotorEncoder *shaker_motor);
         ~Module();
 
         void calibrate();
@@ -37,6 +37,7 @@ class Module{
         DashBoard *dash_board;
         Disk *disk;
         cppQueue *mm_command_queue;
+        MotorEncoder *shaker_motor;
 
         void sense_color();
         void sense_metal();

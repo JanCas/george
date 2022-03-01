@@ -1,7 +1,7 @@
 #include "Module.hpp"
 
 
-Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, DashBoard *dash_board, Disk *disk) {
+Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, DashBoard *dash_board, Disk *disk, MotorEncoder *shaker_motor) {
     this->target_color = target_color;
     this->mm_queue = mm_queue;
     this->color_sensor = color_sensor;
@@ -10,6 +10,7 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     this->dash_board = dash_board;
     this->disk = disk;
     this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
+    this->shaker_motor = shaker_motor;
 }
 
 
@@ -29,6 +30,7 @@ void Module::calibrate() {
 
 void Module::init(){
     swively->init();
+    shaker_motor->set_speed(255);
 }
 
 void Module::pause() {
@@ -64,9 +66,9 @@ void Module::step() {
 
 // }
 
-void Module::send_upstream(bool pause){
+// void Module::send_upstream(bool pause){
 
-}
+// }
 
 void Module::print_mm(mm_attr mm){
     Serial.print(mm.metal);

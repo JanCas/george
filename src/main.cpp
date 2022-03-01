@@ -15,34 +15,38 @@ cppQueue *mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
 Swiveler swively(8);
 
 double speed;
-double pos;
-double setpoint;
+double pos = 0;
+double setpoint = 72;
 
-PID pid_library(&pos, &speed, &setpoint,.368, .028, .0046, AUTOMATIC);
+PID pid_library(&pos, &speed, &setpoint,0.568, .028, 0.046, DIRECT);
 
 void setup()
 {
     swively.init();
     Serial.begin(9600);
-   // motor_encoder.set_init_speed(50);
+   motor_encoder.set_init_speed(50);
    // motor_encoder.turn_on();
 
     pid_library.SetMode(AUTOMATIC);
-    setpoint = 72;
+    pid_library.SetOutputLimits(-50,50);
 }
 
 void loop()
 {
-    
     // double curr_pos = 0;
     // double new_vel = pid.compute(motor_encoder.get_pos(), 72, 30);
     // double new_vel2 = motor_encoder.pid_compute(72,30);  
     
 
-//    pos = motor_encoder.get_pos();
+   pos = motor_encoder.get_pos();
 
-//    pid_library.Compute();
-
+    if(pid_library.Compute()){
+        Serial.print(speed);
+        motor_encoder.set_speed(speed);
+        // pos++;
+        Serial.print(" || ");
+        Serial.println(pos);
+    }
 
     // Serial.print("outside_vel: ");
     // Serial.print(new_vel2);
