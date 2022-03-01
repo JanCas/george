@@ -70,7 +70,7 @@ void Module::step() {
 
 // }
 
-void Module::print_mm(mm_attr mm){
+void Module::print_mm(const mm_attr &mm){
     Serial.print(mm.metal);
     Serial.print(" || ");
     Serial.println(mm.right_color);
@@ -124,7 +124,7 @@ void Module::check_mm(){
     Serial.println();
 }
 
-void Module::move_swiveler(mm_attr mm_at_swiveler){
+void Module::move_swiveler(const mm_attr &mm_at_swiveler){
     if (mm_at_swiveler.metal){
         swively->move_to(CLOSED);
         return;
