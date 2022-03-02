@@ -1,11 +1,10 @@
 #include "PID_controller.hpp"
 
 
-PID_controller::PID_controller(double Kp, double Kd, double Ki, double step_time, double step_size, double alpha) {
+PID_controller::PID_controller(double Kp, double Kd, double Ki, double alpha) {
     this->Kp = Kp;
     this->Kd = Kd;
     this->Ki = Ki;
-    this->step_size = step_size;
     this->alpha = alpha;
 }
 

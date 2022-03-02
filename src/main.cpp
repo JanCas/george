@@ -7,52 +7,91 @@
 #include "Disk.hpp"
 #include "Swiveler.hpp"
 #include <PID_v1.h>
+#include <PID_AutoTune_v0.h>
 
-PID_controller pid(0.368, .028, 0.0046, 0.7833, 1.0, .075);
-MotorEncoder motor_encoder(12, 11, 10, 20, 21, 380, 12, &pid);
-Disk disk(&motor_encoder);
+Swiveler *swively = new Swiveler(8);
 cppQueue *mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
-Swiveler swively(8);
+PID_controller pid(.35, 0, .08, .075);
+MotorEncoder motor_encoder(12,11,10, 20,21,380,12, &pid);
 
-double speed;
-double pos = 0;
-double setpoint = 72;
 
-PID pid_library(&pos, &speed, &setpoint,0.568, .028, 0.046, DIRECT);
+void print_mm(const mm_attr &mm){
+    Serial.print(mm.metal);
+    Serial.print(" || ");
+    Serial.println(mm.right_color);
+}
+
+void move_swiveler(const mm_attr &mm_at_swiveler){
+    if (mm_at_swiveler.metal){
+        swively->move_to(CLOSED);
+        return;
+    }
+    if (mm_at_swiveler.right_color){
+        swively->move_to(BUCKET);
+    } else {
+        swively->move_to(NEXT_MODULE);
+    }
+}
+void check_mm(){
+
+    mm_attr *mm = new mm_attr;
+
+    Serial.println("is it metal? ");
+    while (Serial.available() == 0){}
+
+    char x = Serial.read();
+    if (x == 'y'){
+        mm -> metal = true;
+    }
+    else if (x == 'n'){
+        mm -> metal = false;
+    }
+    mm_command_queue->push(&mm);
+
+    // there is an mm at the metal part
+    if (mm_command_queue->getCount() > 1){
+        Serial.println("Is the mm the correct color");
+        mm_attr *mm_at_color = nullptr;
+        mm_command_queue->peek(&mm_at_color);
+
+        while (Serial.available() == 0){}
+
+        x = Serial.read();
+
+        if (x == 'y'){
+            mm_at_color->right_color = true;
+        }
+        else if (x == 'n'){
+            mm_at_color->right_color = false;
+        }
+   } 
+
+    if (mm_command_queue->getCount() == 2){
+        mm_attr *return_mm = nullptr;
+
+        
+
+        if (mm_command_queue->pop(&return_mm)){
+            move_swiveler(*return_mm); 
+            print_mm(*return_mm);        
+        }
+
+        delete return_mm;
+    }
+    Serial.println();
+}
+
 
 void setup()
 {
-    swively.init();
     Serial.begin(9600);
-   motor_encoder.set_init_speed(50);
-   // motor_encoder.turn_on();
-
-    pid_library.SetMode(AUTOMATIC);
-    pid_library.SetOutputLimits(-50,50);
+    swively->init();
+    // motor_encoder.set_init_speed(70);
+    // motor_encoder.turn_on();
 }
 
 void loop()
 {
-    // double curr_pos = 0;
-    // double new_vel = pid.compute(motor_encoder.get_pos(), 72, 30);
-    // double new_vel2 = motor_encoder.pid_compute(72,30);  
-    
-
-   pos = motor_encoder.get_pos();
-
-    if(pid_library.Compute()){
-        Serial.print(speed);
-        motor_encoder.set_speed(speed);
-        // pos++;
-        Serial.print(" || ");
-        Serial.println(pos);
-    }
-
-    // Serial.print("outside_vel: ");
-    // Serial.print(new_vel2);
-    // Serial.print(" || inside vel: ");
-    // Serial.println(new_vel2);
-
-    //motor_encoder.set_speed(new_vel);
-    //motor_encoder.drive_to(72);
+   check_mm(); 
+//    motor_encoder.drive_to(180);
 }
