@@ -19,3 +19,7 @@ void Swiveler::move_to(swiveler_position_enum desired_pos) {
     servo->write(desired_pos);
     position = desired_pos;
 }
+
+void Swiveler::move_to_degree(int degree){
+    servo->write(degree);
+}

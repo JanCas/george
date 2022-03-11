@@ -86,12 +86,37 @@ void setup()
 {
     Serial.begin(9600);
     swively->init();
-    // motor_encoder.set_init_speed(70);
-    // motor_encoder.turn_on();
+    motor_encoder.set_init_speed(75);
+    motor_encoder.turn_on();
+    swively->move_to_degree(90);
+    Serial.println("the servo is at 90 deg");
+    while (Serial.available() == 0){}
 }
 
 void loop()
 {
-   check_mm(); 
+//    check_mm(); 
 //    motor_encoder.drive_to(180);
+
+    for (int i = 90; i < 140; i++)
+    {
+        swively->move_to_degree(i);
+        Serial.println(i);
+        delay(10);
+    }
+
+    for (int i = 140; i > 10; i--)
+    {
+        swively->move_to_degree(i);
+        Serial.println(i);
+        delay(10);
+    }
+
+    for (int i = 10; i < 90; i++)
+    {
+        swively->move_to_degree(i);
+        Serial.println(i);
+        delay(10);
+    }
+    
 }
