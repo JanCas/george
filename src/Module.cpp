@@ -1,7 +1,8 @@
 #include "Module.hpp"
 
 
-Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, DashBoard *dash_board, Disk *disk, MotorEncoder *shaker_motor) {
+Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
+                DashBoard *dash_board, Disk *disk, MotorEncoder *shaker_motor,int upstream_io_pin, int downstream_io_pin) {
     this->target_color = target_color;
     this->mm_queue = mm_queue;
     this->color_sensor = color_sensor;
@@ -11,6 +12,12 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     this->disk = disk;
     this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
     this->shaker_motor = shaker_motor;
+
+    pinMode(upstream_io_pin, OUTPUT);
+    pinMode(downstream_io_pin, INPUT);
+
+    this->upstream_io_pin = upstream_io_pin;
+    this->downstream_io_pin = downstream_io_pin;
 }
 
 
@@ -41,7 +48,7 @@ void Module::step() {
 
     // check if the queue is full
     if (mm_queue->is_full() && 0){
-        // implement this later
+        send_upstream(true);
     }
 
     if (check_downstream() && 0){
@@ -62,13 +69,17 @@ void Module::step() {
     }
 }
 
-// bool Module::check_downstream(){
+bool Module::check_downstream(){
+    return digitalRead(downstream_io_pin) == HIGH;
+}
 
-// }
-
-// void Module::send_upstream(bool pause){
-
-// }
+void Module::send_upstream(bool pause){
+    if (pause){
+        digitalWrite(upstream_io_pin, HIGH);
+    }else{
+        digitalWrite(upstream_io_pin, LOW);
+    }
+}
 
 void Module::print_mm(const mm_attr &mm){
     Serial.print(mm.metal);
