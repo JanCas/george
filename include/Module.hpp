@@ -59,6 +59,11 @@ class Module{
         void pause();
 
         /**
+         * @brief if the module is paused then it continues
+         */
+        void continue_module();
+
+        /**
          * @brief reads the e-stop button and makes sure the arduino knows whats going on 
          * @return true e stop button is on
          * @return false e stop button is off 

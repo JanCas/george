@@ -29,6 +29,8 @@ Module::~Module() {
     delete swively;
     delete dash_board;
     delete mm_command_queue;
+    delete disk;
+    delete shaker_motor;
 }
 
 void Module::calibrate() {
@@ -41,7 +43,11 @@ void Module::init(){
 }
 
 void Module::pause() {
+    if (!running) return;
+}
 
+void Module::continue_module(){
+    if (running) return;
 }
 
 void Module::step() {

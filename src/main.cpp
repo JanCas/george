@@ -8,115 +8,24 @@
 #include "Swiveler.hpp"
 #include <PID_v1.h>
 #include <PID_AutoTune_v0.h>
+#include <LCD.hpp>
 
 Swiveler *swively = new Swiveler(8);
 cppQueue *mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
 PID_controller pid(.35, 0, .08, .075);
-MotorEncoder motor_encoder(12,11,10, 20,21,380,12, &pid);
+MotorEncoder motor_encoder(12, 11, 10, 20, 21, 380, 12, &pid);
+// LCD lcd(16,2);
+int delayTime = 100;
 
-
-void print_mm(const mm_attr &mm){
-    Serial.print(mm.metal);
-    Serial.print(" || ");
-    Serial.println(mm.right_color);
-}
-
-void move_swiveler(const mm_attr &mm_at_swiveler){
-    if (mm_at_swiveler.metal){
-        swively->move_to(CLOSED);
-        return;
-    }
-    if (mm_at_swiveler.right_color){
-        swively->move_to(BUCKET);
-    } else {
-        swively->move_to(NEXT_MODULE);
-    }
-}
-void check_mm(){
-
-    mm_attr *mm = new mm_attr;
-
-    Serial.println("is it metal? ");
-    while (Serial.available() == 0){}
-
-    char x = Serial.read();
-    if (x == 'y'){
-        mm -> metal = true;
-    }
-    else if (x == 'n'){
-        mm -> metal = false;
-    }
-    mm_command_queue->push(&mm);
-
-    // there is an mm at the metal part
-    if (mm_command_queue->getCount() > 1){
-        Serial.println("Is the mm the correct color");
-        mm_attr *mm_at_color = nullptr;
-        mm_command_queue->peek(&mm_at_color);
-
-        while (Serial.available() == 0){}
-
-        x = Serial.read();
-
-        if (x == 'y'){
-            mm_at_color->right_color = true;
-        }
-        else if (x == 'n'){
-            mm_at_color->right_color = false;
-        }
-   } 
-
-    if (mm_command_queue->getCount() == 2){
-        mm_attr *return_mm = nullptr;
-
-        
-
-        if (mm_command_queue->pop(&return_mm)){
-            move_swiveler(*return_mm); 
-            print_mm(*return_mm);        
-        }
-
-        delete return_mm;
-    }
-    Serial.println();
-}
-
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup()
 {
     Serial.begin(9600);
-    swively->init();
-    motor_encoder.set_init_speed(75);
+    motor_encoder.set_init_speed(50);
     motor_encoder.turn_on();
-    swively->move_to_degree(90);
-    Serial.println("the servo is at 90 deg");
-    while (Serial.available() == 0){}
 }
 
 void loop()
 {
-//    check_mm(); 
-//    motor_encoder.drive_to(180);
-
-    for (int i = 90; i < 140; i++)
-    {
-        swively->move_to_degree(i);
-        Serial.println(i);
-        delay(10);
-    }
-
-    for (int i = 140; i > 10; i--)
-    {
-        swively->move_to_degree(i);
-        Serial.println(i);
-        delay(10);
-    }
-
-    for (int i = 10; i < 90; i++)
-    {
-        swively->move_to_degree(i);
-        Serial.println(i);
-        delay(10);
-    }
-    
 }
