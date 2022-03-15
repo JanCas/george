@@ -72,7 +72,7 @@ class MotorEncoder{
 
         double set_init_speed(double speed);
 
-        double pid_compute(int des, int contraint);
+        void set_speed_constraint(int speed);
 
     private:
 
@@ -88,6 +88,7 @@ class MotorEncoder{
         float deg_per_count;
 
         double speed;
+        int speed_constraint;
 
         Encoder *encoder;
         PID_controller *pid_controller;

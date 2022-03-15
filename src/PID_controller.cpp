@@ -1,17 +1,16 @@
 #include "PID_controller.hpp"
 
 
-PID_controller::PID_controller(double Kp, double Kd, double Ki, double step_time, double step_size, double alpha) {
+PID_controller::PID_controller(double Kp, double Kd, double Ki, double alpha) {
     this->Kp = Kp;
     this->Kd = Kd;
     this->Ki = Ki;
-    this->step_size = step_size;
     this->alpha = alpha;
 }
 
 PID_controller::~PID_controller() {}
 
-double PID_controller::compute(float input, double desired, int contraint){
+double PID_controller::compute(float input, double desired){
     
     unsigned long t = micros() / 1000000.0; // current time
 
@@ -29,7 +28,6 @@ double PID_controller::compute(float input, double desired, int contraint){
         error_old = error;
         t_old = t;
 
-        V = constrain(V, -1*contraint, contraint);
         return V;
     }
 }
