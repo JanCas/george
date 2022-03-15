@@ -6,10 +6,11 @@
 class PID_controller{
     public:
 
+
         PID_controller(double Kp, double Kd, double Ki, double alpha);
         ~PID_controller();
 
-        double compute(float input, double desired, int contraint);
+        double compute(float input, double desired);
 
     private:
 

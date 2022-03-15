@@ -84,8 +84,10 @@ float MotorEncoder::get_pos(){
 
 bool MotorEncoder::drive_to(int des_pos){
     double curr_pos = get_pos();
-    double new_vel = pid_controller->compute(curr_pos, des_pos, speed);
-    
+        
+    double new_vel = pid_controller->compute(curr_pos, des_pos);
+
+    new_vel = constrain(new_vel, -1*speed_constraint, speed_constraint);
     Serial.print("pos: ");
     Serial.print(curr_pos);
     Serial.print(" || vel: ");
@@ -100,11 +102,11 @@ bool MotorEncoder::drive_to(int des_pos){
     return false;
 }
 
-double MotorEncoder::pid_compute(int des_pos, int constraint){
-    return pid_controller->compute(get_pos(), des_pos, constraint);
-}
-
 double MotorEncoder::set_init_speed(double speed){
     this->speed = normalize_speed(speed);
     return this->speed;
+}
+
+void MotorEncoder::set_speed_constraint(int speed){
+    speed_constraint = speed;
 }
