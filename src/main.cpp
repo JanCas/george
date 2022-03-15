@@ -17,6 +17,9 @@ cppQueue *mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
 PID_controller pid(.35, 0, .08, .075);
 MotorEncoder motor_encoder(12,11,10, 20,21,380,12, &pid);
 
+double pos;
+double speed;
+double setpoint = 72;
 
 PID pid_library(&pos, &speed, &setpoint,0.568, .028, 0.046, DIRECT);
 PID_ATune pid_auto(&pos, &speed);
