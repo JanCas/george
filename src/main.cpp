@@ -10,10 +10,9 @@
 #include <PID_AutoTune_v0.h>
 
 
-PID_controller pid(.5, 0.000, .07, .075);
+PID_controller pid(.5, 0.000, .07, .045);
 MotorEncoder motor_encoder(12, 11, 10, 20, 21, 380, 12, &pid);
 Disk disk(&motor_encoder);
-cppQueue *mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
 PID_controller pid(.35, 0, .08, .075);
 MotorEncoder motor_encoder(12,11,10, 20,21,380,12, &pid);
 
@@ -39,8 +38,12 @@ void setup()
 void loop()
 {
     
-    if(motor_encoder.drive_to(72)){
-        motor_encoder.turn_off();
+    // if(motor_encoder.drive_to(72)){
+    //     motor_encoder.turn_off();
+    // }
+
+    if (disk.move_to_next()){
+        delay(1000);
     }
 
     // motor_encoder.set_speed(speed);
