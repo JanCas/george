@@ -9,23 +9,22 @@
 #include <PID_v1.h>
 #include <PID_AutoTune_v0.h>
 
+
 PID_controller pid(.5, 0.000, .07, .075);
 MotorEncoder motor_encoder(12, 11, 10, 20, 21, 380, 12, &pid);
 Disk disk(&motor_encoder);
 cppQueue *mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
-Swiveler swively(8);
+PID_controller pid(.35, 0, .08, .075);
+MotorEncoder motor_encoder(12,11,10, 20,21,380,12, &pid);
 
-double speed;
-double pos = 0;
-double setpoint = 72;
 
 PID pid_library(&pos, &speed, &setpoint,0.568, .028, 0.046, DIRECT);
 PID_ATune pid_auto(&pos, &speed);
 
 void setup()
 {
-    swively.init();
     Serial.begin(9600);
+
     motor_encoder.set_init_speed(50);
     motor_encoder.set_speed_constraint(50);
     // motor_encoder.turn_on();
@@ -50,5 +49,4 @@ void loop()
     //     Serial.print(" || ");
     //     Serial.print(pid_auto.GetKi());
     // }
-
 }

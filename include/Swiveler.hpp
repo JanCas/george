@@ -18,6 +18,7 @@ class Swiveler{
 
         void move_to(swiveler_position_enum desired_pos);
         void init();
+        void move_to_degree(int degree);
 
     private:
         int pin_num;

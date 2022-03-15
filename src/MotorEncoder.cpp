@@ -84,10 +84,10 @@ float MotorEncoder::get_pos(){
 
 bool MotorEncoder::drive_to(int des_pos){
     double curr_pos = get_pos();
+        
     double new_vel = pid_controller->compute(curr_pos, des_pos);
 
     new_vel = constrain(new_vel, -1*speed_constraint, speed_constraint);
-
     Serial.print("pos: ");
     Serial.print(curr_pos);
     Serial.print(" || vel: ");
