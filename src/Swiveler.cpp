@@ -16,20 +16,10 @@ Swiveler::~Swiveler() {
 }
 
 void Swiveler::move_to(swiveler_position_enum desired_pos) {
-    
-    switch (desired_pos) {
-        case CLOSED:
-            servo->write(0);
-            break;
-    
-        case BUCKET:
-            servo->write(90);
-            break;
-
-        case NEXT_MODULE:
-            servo->write(180);
-            break;
-    }
-
+    servo->write(desired_pos);
     position = desired_pos;
+}
+
+void Swiveler::move_to_degree(int degree){
+    servo->write(degree);
 }

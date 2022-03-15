@@ -7,25 +7,27 @@
 #include "Disk.hpp"
 #include "Swiveler.hpp"
 #include <PID_v1.h>
+#include <PID_AutoTune_v0.h>
 
-PID_controller pid(0.368, .028, 0.0046, 0.7833, 1.0, .075);
+
+PID_controller pid(.5, 0.000, .07, .075);
 MotorEncoder motor_encoder(12, 11, 10, 20, 21, 380, 12, &pid);
 Disk disk(&motor_encoder);
 cppQueue *mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
-Swiveler swively(8);
+PID_controller pid(.35, 0, .08, .075);
+MotorEncoder motor_encoder(12,11,10, 20,21,380,12, &pid);
 
-double speed;
-double pos = 0;
-double setpoint = 72;
 
 PID pid_library(&pos, &speed, &setpoint,0.568, .028, 0.046, DIRECT);
+PID_ATune pid_auto(&pos, &speed);
 
 void setup()
 {
-    swively.init();
     Serial.begin(9600);
-   motor_encoder.set_init_speed(50);
-   // motor_encoder.turn_on();
+
+    motor_encoder.set_init_speed(50);
+    motor_encoder.set_speed_constraint(50);
+    // motor_encoder.turn_on();
 
     pid_library.SetMode(AUTOMATIC);
     pid_library.SetOutputLimits(-50,50);
@@ -33,26 +35,18 @@ void setup()
 
 void loop()
 {
-    // double curr_pos = 0;
-    // double new_vel = pid.compute(motor_encoder.get_pos(), 72, 30);
-    // double new_vel2 = motor_encoder.pid_compute(72,30);  
     
-
-   pos = motor_encoder.get_pos();
-
-    if(pid_library.Compute()){
-        Serial.print(speed);
-        motor_encoder.set_speed(speed);
-        // pos++;
-        Serial.print(" || ");
-        Serial.println(pos);
+    if(motor_encoder.drive_to(72)){
+        motor_encoder.turn_off();
     }
 
-    // Serial.print("outside_vel: ");
-    // Serial.print(new_vel2);
-    // Serial.print(" || inside vel: ");
-    // Serial.println(new_vel2);
+    // motor_encoder.set_speed(speed);
 
-    //motor_encoder.set_speed(new_vel);
-    //motor_encoder.drive_to(72);
+    // if (pid_auto.Runtime()){
+    //     Serial.print(pid_auto.GetKp());
+    //     Serial.print(" || ");
+    //     Serial.print(pid_auto.GetKd());
+    //     Serial.print(" || ");
+    //     Serial.print(pid_auto.GetKi());
+    // }
 }

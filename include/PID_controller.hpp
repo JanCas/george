@@ -6,18 +6,18 @@
 class PID_controller{
     public:
 
-        PID_controller(double Kp, double Kd, double Ki, double step_time, double step_size, double alpha);
+
+        PID_controller(double Kp, double Kd, double Ki, double alpha);
         ~PID_controller();
 
-        double compute(float input, double desired, int contraint);
+        double compute(float input, double desired);
 
     private:
 
         double t_old;
-        double T_interval = .000001;
+        double T_interval = .00001;
         double Kp, Kd, Ki;
         double error_old, dError_filt_old;
-        double step_size;
         double alpha;
 };
 
