@@ -21,7 +21,7 @@ int delayTime = 100;
 QTRSensors qtr;
 
 int downstream_pin = 1;
-int led_pin = 2;
+int led_pin = 52;
 
 MMQueue mm_queue(5, (const uint8_t[]){22, 36, 24, 38, 26, 40, 28, 42, 30, 44, 32, 46, 34}, 2);
 
@@ -32,10 +32,12 @@ void setup()
 {
     Serial.begin(9600);
     motor_encoder.set_init_speed(30);
-    // motor_encoder.turn_on();
+    motor_encoder.turn_on();
 
     swively->init();
     swively->move_to(BUCKET);
+
+    // pinMode(led_pin, OUTPUT);
 
     lcd.init();
     mm_queue.init();
@@ -46,6 +48,7 @@ void setup()
 
 void loop()
 {   
+    /*
     if (!running){
         running = digitalRead(downstream_pin) == LOW;
         motor_encoder.turn_off();
@@ -63,16 +66,18 @@ void loop()
         }
 
         if (digitalRead(downstream_pin) == HIGH){
-            running = false;
+            // running = false;
             return;
         }
-
-
     }
+    */
+//    swively->move_to(CLOSED);
+//    delay(1000);
 
-    
-    
+//    swively->move_to(BUCKET);
+//    delay(1000);
 
-    
+//    swively->move_to(NEXT_MODULE);
+//    delay(1000);
 
 }  
