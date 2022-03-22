@@ -1,14 +1,13 @@
 #include "MotorEncoder.hpp"
 
 
-MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_pin1, int encoder_pin2, int gear_ratio, int count, PID_controller *pid_controller) {
+MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_pin1, int encoder_pin2, int gear_ratio, int count){
     this->ena_pin = ena_pin;
     this->in1_pin = in1_pin;
     this->in2_pin = in2_pin;
     this->gear_ratio = gear_ratio;
     this->count = count;
 
-    this->pid_controller = pid_controller;
     this->encoder = new Encoder(encoder_pin1, encoder_pin2);
 
     pinMode(this->ena_pin, OUTPUT);
@@ -95,17 +94,10 @@ bool MotorEncoder::drive_to(int des_pos){
     return false;
 }
 
-double MotorEncoder::pid_compute(int des_pos, int constraint){
-    return pid_controller->compute(get_pos(), des_pos, constraint);
-}
 
 double MotorEncoder::set_init_speed(double speed){
     this->speed = normalize_speed(speed);
     return this->speed;
-}
-
-void MotorEncoder::set_speed_constrain(double speed){
-    this->speed_constrain = normalize_speed(speed);    
 }
 
 void MotorEncoder::pid(double des){
