@@ -3,6 +3,8 @@
 
 Disk::Disk(MotorEncoder *motor) {
     this->motor = motor;
+    curr_position = COLLECTION;
+    next_position = HALL_SENSOR;
 }
 
 Disk::~Disk() {
@@ -55,8 +57,9 @@ void Disk::update_position(disk_position_enum pos) {
 }
 
 bool Disk::move_to_next() {
-
-    
+    Serial.print("moving disk to: ");
+    Serial.println(next_position);
+    return move_to(next_position);
 }
 
 void Disk::pause() {

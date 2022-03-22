@@ -18,7 +18,8 @@ class Module{
 
     public:
 
-        Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, DashBoard *dash_board, Disk *disk);
+        Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
+                DashBoard *dash_board, Disk *disk, MotorEncoder *shaker_motor, int upstream_io_pin, int downstream_io_pin);
         ~Module();
 
         void calibrate();
@@ -37,6 +38,10 @@ class Module{
         DashBoard *dash_board;
         Disk *disk;
         cppQueue *mm_command_queue;
+        MotorEncoder *shaker_motor;
+
+        int upstream_io_pin;
+        int downstream_io_pin;
 
         void sense_color();
         void sense_metal();
@@ -52,6 +57,11 @@ class Module{
          * @brief pauses the module
          */
         void pause();
+
+        /**
+         * @brief if the module is paused then it continues
+         */
+        void continue_module();
 
         /**
          * @brief reads the e-stop button and makes sure the arduino knows whats going on 
@@ -84,7 +94,9 @@ class Module{
          * @brief sends the swiveler to the correct position based on the mm
          * 
          */
-        void move_swiveler(mm_attr mm_at_swiveler);
+        void move_swiveler(const mm_attr &mm_at_swiveler);
+
+        void print_mm(const mm_attr &mm);
 };
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */

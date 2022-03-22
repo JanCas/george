@@ -5,9 +5,9 @@
 
 
 enum swiveler_position_enum{
-    CLOSED,
-    BUCKET,
-    NEXT_MODULE,
+    CLOSED =165,
+    BUCKET = 90,
+    NEXT_MODULE = 30,
 };
 
 class Swiveler{
@@ -18,6 +18,7 @@ class Swiveler{
 
         void move_to(swiveler_position_enum desired_pos);
         void init();
+        void move_to_degree(int degree);
 
     private:
         int pin_num;

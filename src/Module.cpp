@@ -1,7 +1,8 @@
 #include "Module.hpp"
 
 
-Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, DashBoard *dash_board, Disk *disk) {
+Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
+                DashBoard *dash_board, Disk *disk, MotorEncoder *shaker_motor,int upstream_io_pin, int downstream_io_pin) {
     this->target_color = target_color;
     this->mm_queue = mm_queue;
     this->color_sensor = color_sensor;
@@ -10,7 +11,16 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     this->dash_board = dash_board;
     this->disk = disk;
     this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
+    this->shaker_motor = shaker_motor;
+
+    pinMode(upstream_io_pin, OUTPUT);
+    pinMode(downstream_io_pin, INPUT);
+
+    this->upstream_io_pin = upstream_io_pin;
+    this->downstream_io_pin = downstream_io_pin;
 }
+
+
 
 Module::~Module() {
     delete mm_queue;
@@ -19,6 +29,8 @@ Module::~Module() {
     delete swively;
     delete dash_board;
     delete mm_command_queue;
+    delete disk;
+    delete shaker_motor;
 }
 
 void Module::calibrate() {
@@ -27,28 +39,33 @@ void Module::calibrate() {
 
 void Module::init(){
     swively->init();
+    shaker_motor->set_speed(255);
 }
 
 void Module::pause() {
+    if (!running) return;
+}
 
+void Module::continue_module(){
+    if (running) return;
 }
 
 void Module::step() {
 
     // check if the queue is full
-    if (mm_queue->is_full()){
-        // implement this later
+    if (mm_queue->is_full() && 0){
+        send_upstream(true);
     }
 
-    if (check_downstream()){
+    if (check_downstream() && 0){
         
     }
 
-    if (is_hand()){
+    if (is_hand() && 0){
 
     }
 
-    if (e_stop()){
+    if (e_stop() && 0){
         
     }
 
@@ -58,67 +75,73 @@ void Module::step() {
     }
 }
 
-// bool Module::check_downstream(){
-
-// }
-
-void Module::send_upstream(bool pause){
-
+bool Module::check_downstream(){
+    return digitalRead(downstream_io_pin) == HIGH;
 }
 
-void print_mm(mm_attr mm){
+void Module::send_upstream(bool pause){
+    if (pause){
+        digitalWrite(upstream_io_pin, HIGH);
+    }else{
+        digitalWrite(upstream_io_pin, LOW);
+    }
+}
+
+void Module::print_mm(const mm_attr &mm){
     Serial.print(mm.metal);
     Serial.print(" || ");
     Serial.println(mm.right_color);
 }
 
 void Module::check_mm(){
-    mm_attr mm;
+
+    mm_attr *mm = new mm_attr;
 
     Serial.println("is it metal? ");
-    while (Serial.available() == 0){
-
-    }
+    while (Serial.available() == 0){}
 
     char x = Serial.read();
     if (x == 'y'){
-        mm.metal = true;
+        mm -> metal = true;
     }
     else if (x == 'n'){
-        mm.metal = false;
+        mm -> metal = false;
     }
-    Serial.println("a new mm with determined metal value has been added to the queue");
     mm_command_queue->push(&mm);
 
-    if (mm_command_queue->getCount() >= 1){
+    // there is an mm at the metal part
+    if (mm_command_queue->getCount() > 1){
         Serial.println("Is the mm the correct color");
-        mm_attr mm_at_color;
+        mm_attr *mm_at_color = nullptr;
         mm_command_queue->peek(&mm_at_color);
 
         while (Serial.available() == 0){}
 
         x = Serial.read();
+
         if (x == 'y'){
-            mm_at_color.right_color = true;
+            mm_at_color->right_color = true;
         }
         else if (x == 'n'){
-            mm_at_color.right_color = false;
+            mm_at_color->right_color = false;
         }
-    } 
+   } 
 
     if (mm_command_queue->getCount() == 2){
-        mm_attr return_mm;
+        mm_attr *return_mm = nullptr;
+
+        print_mm(*mm);
 
         if (mm_command_queue->pop(&return_mm)){
-            Serial.println("MM AT THE SWIVELER ------------");
-            print_mm(return_mm);
-            Serial.println("-------------------------------");
+            move_swiveler(*return_mm);         
         }
+
+        delete return_mm;
     }
     Serial.println();
 }
 
-void Module::move_swiveler(mm_attr mm_at_swiveler){
+void Module::move_swiveler(const mm_attr &mm_at_swiveler){
     if (mm_at_swiveler.metal){
         swively->move_to(CLOSED);
         return;

@@ -10,8 +10,12 @@
             "includePath": [
                 "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/include",
                 "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/src",
+                "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/LiquidCrystal_I2C",
+                "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/QTRSensors",
+                "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/PID-AutoTune",
+                "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/PID",
                 "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Queue/src",
-                "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/avr-debugger/avr8-stub",
                 "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Servo/src",
                 "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Encoder",
                 "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Encoder/utility",
@@ -21,7 +25,6 @@
                 "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                 "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
                 "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
-                "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
                 ""
             ],
             "browse": {
@@ -29,8 +32,12 @@
                 "path": [
                     "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/include",
                     "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/src",
+                    "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/LiquidCrystal_I2C",
+                    "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/QTRSensors",
+                    "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/PID-AutoTune",
+                    "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/PID",
                     "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Queue/src",
-                    "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/avr-debugger/avr8-stub",
                     "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Servo/src",
                     "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Encoder",
                     "c:/Users/janlc/OneDrive/School/University of Utah/Junior/Spring/MEEN 3230/george/.pio/libdeps/megaADK/Encoder/utility",
@@ -40,7 +47,6 @@
                     "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                     "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
                     "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
-                    "C:/Users/janlc/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
                     ""
                 ]
             },

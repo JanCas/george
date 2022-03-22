@@ -1,14 +1,13 @@
 #include "MotorEncoder.hpp"
 
 
-MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_pin1, int encoder_pin2, int gear_ratio, int count, PID_controller *pid_controller) {
+MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_pin1, int encoder_pin2, int gear_ratio, int count){
     this->ena_pin = ena_pin;
     this->in1_pin = in1_pin;
     this->in2_pin = in2_pin;
     this->gear_ratio = gear_ratio;
     this->count = count;
 
-    this->pid_controller = pid_controller;
     this->encoder = new Encoder(encoder_pin1, encoder_pin2);
 
     pinMode(this->ena_pin, OUTPUT);
@@ -35,7 +34,7 @@ void MotorEncoder::turn_on() {
     analogWrite(this->ena_pin, this->speed);
 }
 
-int MotorEncoder::set_speed(int speed) {
+double MotorEncoder::set_speed(double speed) {
 
     if (speed < 0){
         ccw();
@@ -58,14 +57,8 @@ void MotorEncoder::turn_off() {
     analogWrite(this->ena_pin, 0);
 }
 
-int MotorEncoder::normalize_speed(int speed) {
-    if (speed > 255){
-        return 255;
-    }else if (speed < 0){
-        return 0;
-    }
-
-    return speed;
+double MotorEncoder::normalize_speed(double speed) {
+    return constrain(speed, -255., 255.);
 }
 
 void MotorEncoder::ccw(){
@@ -89,14 +82,49 @@ float MotorEncoder::get_pos(){
 }
 
 bool MotorEncoder::drive_to(int des_pos){
-    double curr_pos = get_pos();
-    double new_vel = pid_controller->compute(curr_pos, des_pos, speed);
     
-    set_speed((int) new_vel);
+    pid(des_pos);
 
-    if (abs(des_pos - curr_pos) < 1 && new_vel == 0){ // as long as the position is within one degree and the velocity is 0
+    Serial.print("pos: ");
+    Serial.println(get_pos());
+
+    if (abs(des_pos - get_pos()) < 10){ // as long as the position is within one degree and the abs(velocity) is less then 3 
         return true;
     }
-
     return false;
+}
+
+
+double MotorEncoder::set_init_speed(double speed){
+    this->speed = normalize_speed(speed);
+    return this->speed;
+}
+
+void MotorEncoder::pid(double des){
+    t_ms = micros(); // current time
+    t = t_ms / 1000000.0;
+
+    if (t > t_old + T_interval)
+    {
+        pos = get_pos();
+        // Controller code
+        delta_t = t - t_old;
+        error = des - pos;
+        integralError = integralError + error * delta_t;
+        dErrordt = (error - error_old) / delta_t;
+        dErrordtFilt = dErrordt * alpha + dError_filt_old * (1 - alpha);
+        V = Kp * error + Kd * dErrordtFilt + Ki * integralError;
+
+        dError_filt_old = dErrordtFilt;
+        error_old = error;
+        t_old = t;
+
+        if (t > step_time){
+            V = 0;
+        }
+
+        V = constrain(V, -255., 255.);
+
+        set_speed(V);
+    }
 }

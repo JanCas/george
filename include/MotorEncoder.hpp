@@ -2,7 +2,6 @@
 #define BADE85DE_23EB_439C_B233_928A4F2E5B39
 
 #include "Encoder.h"
-#include "PID_controller.hpp"
 
 class MotorEncoder{
 
@@ -18,7 +17,7 @@ class MotorEncoder{
         * @param encoder_b_pin1 should be interrupt enabled
         * @param encoder_b_pin2 
         */
-        MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_pin1, int encoder_pin2, int gear_ratio, int count, PID_controller *pid_controller);
+        MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_pin1, int encoder_pin2, int gear_ratio, int count);
         ~MotorEncoder();
 
         /**
@@ -38,7 +37,7 @@ class MotorEncoder{
          * @return int -> the speed it was set to (since the speed will be normalized in case of < 0
          *                                          or > 75)
          */
-        int set_speed(int speed);
+        double set_speed(double speed);
 
         /**
          * @brief turns off the motor (does not reset the speed variable)
@@ -70,6 +69,8 @@ class MotorEncoder{
          */
         bool drive_to(int degrees);
 
+        double set_init_speed(double speed);
+
     private:
 
         int ena_pin;
@@ -78,15 +79,14 @@ class MotorEncoder{
 
         int gear_ratio;
         int count;
-
+        
         bool direction_clockwise;
 
         float deg_per_count;
 
-        int speed;
+        double speed;
 
         Encoder *encoder;
-        PID_controller *pid_controller;
 
         /**
          * @brief normalizes the speed to make sure it doesnt go above 255 or below 0
@@ -94,9 +94,25 @@ class MotorEncoder{
          * @param speed 
          * @return int returns the normalized speed
          */
-        int normalize_speed(int speed);
+        double normalize_speed(double speed);
 
+        void pid(double des);
 
+        double t_old;
+        double T_interval = .01;
+        double Kp = 4, Kd = .7, Ki = 3.15;
+        double error_old, dError_filt_old;
+        double delta_t;
+        double error;
+        double integralError;
+        double dErrordt;
+        double dErrordtFilt;
+        double V;
+        unsigned long t_ms;
+        double t;
+        double alpha;
+        double step_time = .6;
+        double pos;
 };
 
 #endif /* BADE85DE_23EB_439C_B233_928A4F2E5B39 */

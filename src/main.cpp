@@ -4,21 +4,28 @@
 #include "MotorEncoder.hpp"
 #include "PID_controller.hpp"
 #include "Module.hpp"
+#include "Disk.hpp"
+#include "Swiveler.hpp"
+#include <PID_v1.h>
+#include <PID_AutoTune_v0.h>
+#include <LCD.hpp>
+#include <QTRSensors.h>
+#include "MMQueue.hpp"
 
-PID_controller pid(0.368, .028, 0.0046, 0.7833, 1.0, .075);
-MotorEncoder motor_encoder(12, 11, 10, 20, 21, 380, 12, &pid);
+bool running = false;
+
+PID_controller pid(4, .7, 3.15, .075);
+MotorEncoder motor_encoder(12, 11, 10, 20, 21, 380, 12);
+
+double pos_des = 72.5;
 
 void setup()
 {
     Serial.begin(9600);
-    motor_encoder.set_speed(50);
-    motor_encoder.turn_on();
 }
-
 
 void loop()
 {
-    if (motor_encoder.drive_to(72)){
-        
-    }
+
+    // motor_encoder.drive_to(pos_des); 
 }
