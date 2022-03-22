@@ -1,7 +1,7 @@
 #include "PID_controller.hpp"
 
-
-PID_controller::PID_controller(double Kp, double Kd, double Ki, double alpha) {
+PID_controller::PID_controller(double Kp, double Kd, double Ki, double alpha)
+{
     this->Kp = Kp;
     this->Kd = Kd;
     this->Ki = Ki;
@@ -10,25 +10,29 @@ PID_controller::PID_controller(double Kp, double Kd, double Ki, double alpha) {
 
 PID_controller::~PID_controller() {}
 
-double PID_controller::compute(float input, double desired, int contraint){
-    
-    unsigned long t = micros() / 1000000.0; // current time
+double PID_controller::compute(float input, double desired, float contraint)
+{
+
+    t_ms = micros(); // current time
+    t = t_ms / 1000000.0;
 
     if (t > t_old + T_interval)
     {
         // Controller code
-        double delta_t = t - t_old;
-        double error = desired - input;
-        double integralError = integralError + error * delta_t;
-        double dErrordt = (error - error_old) / delta_t;
-        double dErrordtFilt = dErrordt * alpha + dError_filt_old * (1 - alpha);
-        double V = Kp * error + Kd * dErrordtFilt + Ki * integralError;
+        delta_t = t - t_old;
+        error = desired - input;
+        integralError = integralError + error * delta_t;
+        dErrordt = (error - error_old) / delta_t;
+        dErrordtFilt = dErrordt * alpha + dError_filt_old * (1 - alpha);
+        V = Kp * error + Kd * dErrordtFilt + Ki * integralError;
 
         dError_filt_old = dErrordtFilt;
         error_old = error;
         t_old = t;
 
-        V = constrain(V, -1*contraint, contraint);
+        V = constrain(V, -255., 255.);
+
         return V;
     }
+    return -9999;
 }

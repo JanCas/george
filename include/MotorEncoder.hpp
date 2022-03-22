@@ -71,6 +71,7 @@ class MotorEncoder{
         bool drive_to(int degrees);
 
         double set_init_speed(double speed);
+        void set_speed_constrain(double speed);
 
         double pid_compute(int des, int contraint);
 
@@ -82,12 +83,13 @@ class MotorEncoder{
 
         int gear_ratio;
         int count;
-
+        
         bool direction_clockwise;
 
         float deg_per_count;
 
         double speed;
+        double speed_constrain;
 
         Encoder *encoder;
         PID_controller *pid_controller;
@@ -100,7 +102,23 @@ class MotorEncoder{
          */
         double normalize_speed(double speed);
 
+        void pid(double des);
 
+        double t_old;
+        double T_interval = .01;
+        double Kp = 4, Kd = .7, Ki = 3.15;
+        double error_old, dError_filt_old;
+        double delta_t;
+        double error;
+        double integralError;
+        double dErrordt;
+        double dErrordtFilt;
+        double V;
+        unsigned long t_ms;
+        double t;
+        double alpha;
+        double step_time = .6;
+        double pos;
 };
 
 #endif /* BADE85DE_23EB_439C_B233_928A4F2E5B39 */

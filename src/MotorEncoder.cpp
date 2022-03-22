@@ -59,7 +59,7 @@ void MotorEncoder::turn_off() {
 }
 
 double MotorEncoder::normalize_speed(double speed) {
-    return constrain(speed, -255, 255);
+    return constrain(speed, -255., 255.);
 }
 
 void MotorEncoder::ccw(){
@@ -83,20 +83,15 @@ float MotorEncoder::get_pos(){
 }
 
 bool MotorEncoder::drive_to(int des_pos){
-    double curr_pos = get_pos();
-    double new_vel = pid_controller->compute(curr_pos, des_pos, speed);
     
+    pid(des_pos);
+
     Serial.print("pos: ");
-    Serial.print(curr_pos);
-    Serial.print(" || vel: ");
-    Serial.println(new_vel);
+    Serial.println(get_pos());
 
-    set_speed(new_vel);
-
-    if (abs(des_pos - curr_pos) < 1 && abs(new_vel) < 3){ // as long as the position is within one degree and the abs(velocity) is less then 3 
+    if (abs(des_pos - get_pos()) < 10){ // as long as the position is within one degree and the abs(velocity) is less then 3 
         return true;
     }
-
     return false;
 }
 
@@ -107,4 +102,37 @@ double MotorEncoder::pid_compute(int des_pos, int constraint){
 double MotorEncoder::set_init_speed(double speed){
     this->speed = normalize_speed(speed);
     return this->speed;
+}
+
+void MotorEncoder::set_speed_constrain(double speed){
+    this->speed_constrain = normalize_speed(speed);    
+}
+
+void MotorEncoder::pid(double des){
+    t_ms = micros(); // current time
+    t = t_ms / 1000000.0;
+
+    if (t > t_old + T_interval)
+    {
+        pos = get_pos();
+        // Controller code
+        delta_t = t - t_old;
+        error = des - pos;
+        integralError = integralError + error * delta_t;
+        dErrordt = (error - error_old) / delta_t;
+        dErrordtFilt = dErrordt * alpha + dError_filt_old * (1 - alpha);
+        V = Kp * error + Kd * dErrordtFilt + Ki * integralError;
+
+        dError_filt_old = dErrordtFilt;
+        error_old = error;
+        t_old = t;
+
+        if (t > step_time){
+            V = 0;
+        }
+
+        V = constrain(V, -255., 255.);
+
+        set_speed(V);
+    }
 }

@@ -5,7 +5,9 @@ enum COLORS{
     RED,
     GREEN,
     BLUE,
-    YELLOW
+    YELLOW,
+    BROWN,
+    ORANGE
 };
 
 class ColorSensor{
@@ -16,7 +18,6 @@ class ColorSensor{
         ~ColorSensor();
 
         COLORS sense();
-        void calibrate();
 
 };
 
