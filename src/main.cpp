@@ -13,7 +13,6 @@
 
 bool running = false;
 
-PID_controller pid(4, .7, 3.15, .075);
 MotorEncoder motor_encoder(12, 11, 10, 20, 21, 380, 12);
 
 double pos_des = 72.5;
