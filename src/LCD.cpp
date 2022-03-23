@@ -48,3 +48,11 @@ void LCD::display_right_aligned(String message, int row){
     lcd->setCursor(width-message.length(), row);
     lcd->print(message);
 }
+
+void LCD::clear_row(int row){
+    for (int i = 0; i < width; i++)
+    {
+        lcd->setCursor(i, row);
+        lcd->print(" ");
+    }
+}
