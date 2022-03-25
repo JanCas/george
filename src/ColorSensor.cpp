@@ -28,6 +28,7 @@ COLORS ColorSensor::get_color()
     int g = rgb_arr[1];
     int b = rgb_arr[2];
 
+
     Serial.print(r);
     Serial.print(" || ");
 

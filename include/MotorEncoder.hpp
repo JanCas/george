@@ -70,6 +70,7 @@ class MotorEncoder{
         bool drive_to(int degrees);
 
         double set_init_speed(double speed);
+        void set_pid_values(double Kp, double Kd, double Ki, double alpha);
 
     private:
 
@@ -111,7 +112,6 @@ class MotorEncoder{
         unsigned long t_ms;
         double t;
         double alpha;
-        double step_time = .6;
         double pos;
 };
 

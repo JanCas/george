@@ -57,8 +57,6 @@ void Disk::update_position(disk_position_enum pos) {
 }
 
 bool Disk::move_to_next() {
-    Serial.print("moving disk to: ");
-    Serial.println(next_position);
     return move_to(next_position);
 }
 
