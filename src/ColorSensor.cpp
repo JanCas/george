@@ -136,6 +136,35 @@ void ColorSensor::turn_off()
     digitalWrite(blue_pin, LOW);
 }
 
+String ColorSensor::color_to_string(COLORS color){
+    switch (color)
+    {
+    case RED:
+        return "red";
+        break;
+    case GREEN:
+        return "green";
+        break;
+    case BLUE:
+        return "blue";
+        break;
+    case YELLOW:
+        return "yellow";
+        break;
+    case BROWN:
+        return "brown";
+        break;
+    case ORANGE:
+        return "orange";
+        break;
+    case NOT_A_COLOR:
+        return "NAC";
+        break;
+    default:
+        break;
+    }
+}
+
 void ColorSensor::calibrate()
 {
 

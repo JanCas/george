@@ -6,8 +6,8 @@
 #include "MMQueue.hpp"
 #include "HallSensor.hpp"
 #include "Swiveler.hpp"
-#include "Dashboard.hpp"
 #include <cppQueue.h>
+#include "LCD.hpp"
 
 struct mm_attr{
     bool metal;
@@ -19,7 +19,8 @@ class Module{
     public:
 
         Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
-                DashBoard *dash_board, Disk *disk, MotorEncoder *shaker_motor, int upstream_io_pin, int downstream_io_pin);
+                Disk *disk, MotorEncoder *shaker_motor, int upstream_io_pin, int downstream_io_pin);
+        Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, Disk *disk);
         ~Module();
 
         void calibrate();
@@ -30,15 +31,17 @@ class Module{
 
         bool running;
 
-        COLORS target_color; 
+        COLORS target_color;
+        int max_queue_size;
+
         MMQueue *mm_queue;
         ColorSensor *color_sensor;
         HallSensor *hall_sensor;
         Swiveler *swively;
-        DashBoard *dash_board;
         Disk *disk;
         cppQueue *mm_command_queue;
         MotorEncoder *shaker_motor;
+        LCD *lcd;
 
         int upstream_io_pin;
         int downstream_io_pin;
@@ -97,6 +100,10 @@ class Module{
         void move_swiveler(const mm_attr &mm_at_swiveler);
 
         void print_mm(const mm_attr &mm);
+
+        void display_mm_color(COLORS color);
+
+        void display_queue_size(int queue_size);
 };
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */

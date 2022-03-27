@@ -1,26 +1,16 @@
 #include <Arduino.h>
 
-#include "MotorEncoder.hpp"
-#include "ColorSensor.hpp"
-#include "LCD.hpp"
-#include "Disk.hpp"
 #include "Module.hpp"
-#include "Swiveler.hpp"
-
-bool running = false;
-char serial_byte;
 
 MotorEncoder motor_encoder(12, 11, 10, 2, 3, 380, 12);
 ColorSensor color_sensor(5, 6, 7, A0);
-LCD lcd(16, 2);
 Disk disk(&motor_encoder);
-cppQueue *mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
 Swiveler swively(8);
+MMQueue mm_queue((const uint8_t[]){22, 36, 24, 38, 26, 40, 28, 42, 30, 44, 32, 46, 34}, 2);
 
-COLORS assigned_color = BLUE;
+Module module(BLUE, &mm_queue, &color_sensor, &swively, &disk);
 
-double pos_des = 72.5;
-
+/*
 void display_color(COLORS color)
 {
     lcd.clear_row(1);
@@ -116,21 +106,15 @@ void check_mm()
     }
     Serial.println();
 }
+*/
 
 void setup()
 {
     Serial.begin(9600);
-    lcd.init();
-    lcd.display_message("color: ", CENTER, 0);
-    swively.init();
-    motor_encoder.set_pid_values(1,0,0,.05);
+    module.init();
 }
 
 void loop()
 {
-    if (disk.move_to_next())
-    {
-        check_mm();
-        // delay(1000);
-    }
+    module.step();
 }

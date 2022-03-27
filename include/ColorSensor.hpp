@@ -22,6 +22,7 @@ class ColorSensor{
 
         COLORS get_color();
         void calibrate();
+        String color_to_string(COLORS color);
 
     private:
      

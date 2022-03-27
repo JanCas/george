@@ -2,16 +2,16 @@
 
 
 Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
-                DashBoard *dash_board, Disk *disk, MotorEncoder *shaker_motor,int upstream_io_pin, int downstream_io_pin) {
+                Disk *disk, MotorEncoder *shaker_motor,int upstream_io_pin, int downstream_io_pin) {
     this->target_color = target_color;
     this->mm_queue = mm_queue;
     this->color_sensor = color_sensor;
     this->hall_sensor = hall_sensor;
     this->swively = swively;
-    this->dash_board = dash_board;
     this->disk = disk;
     this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
     this->shaker_motor = shaker_motor;
+    this->lcd = new LCD(16,2);
 
     pinMode(upstream_io_pin, OUTPUT);
     pinMode(downstream_io_pin, INPUT);
@@ -20,17 +20,25 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     this->downstream_io_pin = downstream_io_pin;
 }
 
-
+Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, Disk *disk){
+    this->target_color = target_color;
+    this->mm_queue = mm_queue;
+    this->color_sensor = color_sensor;
+    this->swively = swively;
+    this->disk = disk;
+    this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
+    this->lcd = new LCD(16,2);
+}
 
 Module::~Module() {
     delete mm_queue;
     delete color_sensor;
     delete hall_sensor;
     delete swively;
-    delete dash_board;
     delete mm_command_queue;
     delete disk;
     delete shaker_motor;
+    delete lcd;
 }
 
 void Module::calibrate() {
@@ -40,6 +48,8 @@ void Module::calibrate() {
 void Module::init(){
     swively->init();
     shaker_motor->set_speed(255);
+    lcd->init();
+    mm_queue->init();
 }
 
 void Module::pause() {
@@ -97,32 +107,21 @@ void Module::check_mm(){
 
     mm_attr *mm = new mm_attr;
 
-    Serial.println("is it metal? ");
-    while (Serial.available() == 0){}
-
-    char x = Serial.read();
-    if (x == 'y'){
-        mm -> metal = true;
-    }
-    else if (x == 'n'){
-        mm -> metal = false;
-    }
+    mm->metal = false;
     mm_command_queue->push(&mm);
 
     // there is an mm at the metal part
     if (mm_command_queue->getCount() > 1){
-        Serial.println("Is the mm the correct color");
         mm_attr *mm_at_color = nullptr;
         mm_command_queue->peek(&mm_at_color);
 
-        while (Serial.available() == 0){}
+        COLORS color = color_sensor->get_color();
+        display_mm_color(color);   
 
-        x = Serial.read();
-
-        if (x == 'y'){
+        if (color == target_color){
             mm_at_color->right_color = true;
         }
-        else if (x == 'n'){
+        else if (color == target_color){
             mm_at_color->right_color = false;
         }
    } 
@@ -130,12 +129,9 @@ void Module::check_mm(){
     if (mm_command_queue->getCount() == 2){
         mm_attr *return_mm = nullptr;
 
-        print_mm(*mm);
-
         if (mm_command_queue->pop(&return_mm)){
-            move_swiveler(*return_mm);         
+            move_swiveler(*return_mm);
         }
-
         delete return_mm;
     }
     Serial.println();
@@ -151,6 +147,20 @@ void Module::move_swiveler(const mm_attr &mm_at_swiveler){
     } else {
         swively->move_to(NEXT_MODULE);
     }
+}
+
+void Module::display_queue_size(int queue_size){
+    lcd->clear_row(0);
+    lcd->display_message(String(max_queue_size), LEFT, 0);
+    lcd->display_message("||", CENTER, 0);
+    lcd->display_message(String(queue_size), RIGHT, 0);
+}
+
+void Module::display_mm_color(COLORS color){
+    lcd->clear_row(1);
+    lcd->display_message(color_sensor->color_to_string(target_color), LEFT, 1);
+    lcd->display_message("||", CENTER, 1);
+    lcd->display_message(color_sensor->color_to_string(color), RIGHT, 1);    
 }
 
 // bool Module::is_hand(){

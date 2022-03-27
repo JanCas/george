@@ -1,8 +1,7 @@
 #include "MMQueue.hpp"
 
-MMQueue::MMQueue(int max_queue_size, const uint8_t sensor_pins[], int emitter_pin)
+MMQueue::MMQueue(const uint8_t sensor_pins[], int emitter_pin)
 {
-  this->max_queue_size = max_queue_size;
   this->sensor_pins = sensor_pins;
   this->emitter_pin = emitter_pin;
   this->qtr_sensor = new QTRSensors();
@@ -22,11 +21,6 @@ void MMQueue::init()
   // num_sensors = sizeof(sensor_pins) / sizeof(uint8_t);
   num_sensors = 13;
   // sensor_values = new uint16_t[num_sensors];
-}
-
-bool MMQueue::is_full()
-{
-  return num_mm_in_queue() > max_queue_size;
 }
 
 double MMQueue::num_mm_in_queue()
