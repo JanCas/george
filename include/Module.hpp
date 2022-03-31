@@ -20,7 +20,7 @@ class Module{
 
         Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
                 Disk *disk, MotorEncoder *shaker_motor, int upstream_io_pin, int downstream_io_pin);
-        Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, Disk *disk);
+        Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, Disk *disk, LCD *lcd);
         ~Module();
 
         void calibrate();
@@ -32,6 +32,8 @@ class Module{
         bool running;
 
         COLORS target_color;
+        COLORS last_color;
+
         int max_queue_size;
 
         MMQueue *mm_queue;
@@ -40,14 +42,22 @@ class Module{
         Swiveler *swively;
         Disk *disk;
         cppQueue *mm_command_queue;
-        MotorEncoder *shaker_motor;
+        // MotorEncoder *shaker_motor;
         LCD *lcd;
 
         int upstream_io_pin;
         int downstream_io_pin;
 
+        int led_pause_pin;
+
         void sense_color();
         void sense_metal();
+
+        int e_stop_pin;
+
+        int num_sorted;
+        int num_unsorted;
+        int num_contaminants;
 
         /**
          * @brief checks if the downstream message is to stop the arduino
@@ -91,19 +101,21 @@ class Module{
          * @brief reads the hall sensor and the color position and adds the appropriate things to the queue
          * 
          */
-        void check_mm();
+        COLORS check_mm();
 
         /**
          * @brief sends the swiveler to the correct position based on the mm
          * 
          */
-        void move_swiveler(const mm_attr &mm_at_swiveler);
+        void move_swiveler_and_update_counts(const mm_attr &mm_at_swiveler);
 
         void print_mm(const mm_attr &mm);
 
         void display_mm_color(COLORS color);
 
         void display_queue_size(int queue_size);
+
+        void display_lcd(COLORS color, int queue_size);
 };
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */

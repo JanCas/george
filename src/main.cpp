@@ -2,119 +2,54 @@
 
 #include "Module.hpp"
 
-MotorEncoder motor_encoder(12, 11, 10, 2, 3, 380, 12);
+char serialByte = '0';
+
+MotorEncoder motor_encoder(12, 11, 10, 2, 3, 100, 12);
 ColorSensor color_sensor(5, 6, 7, A0);
 Disk disk(&motor_encoder);
 Swiveler swively(8);
-MMQueue mm_queue((const uint8_t[]){22, 36, 24, 38, 26, 40, 28, 42, 30, 44, 32, 46, 34}, 2);
+MMQueue mm_queue((const uint8_t[]){22, 36, 24, 38, 26, 40, 28, 42, 30, 44, 32, 46, 34}, 51);
+LCD lcd(16,2);
 
-Module module(BLUE, &mm_queue, &color_sensor, &swively, &disk);
-
-/*
-void display_color(COLORS color)
-{
-    lcd.clear_row(1);
-    switch (color)
-    {
-    case RED:
-        lcd.display_message("RED", CENTER, 1);
-        Serial.println("RED");
-        break;
-    case GREEN:
-        lcd.display_message("GREEN", CENTER, 1);
-        Serial.println("GREEN");
-        break;
-    case BLUE:
-        lcd.display_message("BLUE", CENTER, 1);
-        Serial.println("BLUE");
-        break;
-    case YELLOW:
-        lcd.display_message("YELLOW", CENTER, 1);
-        Serial.println("YELLOW");
-        break;
-    case BROWN:
-        lcd.display_message("BROWN", CENTER, 1);
-        Serial.println("BROWN");
-        break;
-    case ORANGE:
-        lcd.display_message("ORANGE", CENTER, 1);
-        Serial.println("ORANGE");
-        break;
-    case NOT_A_COLOR:
-        lcd.display_message("NOT A COLOR", CENTER, 1);
-        Serial.println("NOT A COLOR");
-    default:
-        break;
-    }
-}
-
-void move_swiveler(const mm_attr &mm_at_swiveler)
-{
-    if (mm_at_swiveler.metal)
-    {
-        swively.move_to(CLOSED);
-        return;
-    }
-    if (mm_at_swiveler.right_color)
-    {
-        swively.move_to(BUCKET);
-    }
-    else
-    {
-        swively.move_to(NEXT_MODULE);
-    }
-}
-
-void check_mm()
-{
-
-    mm_attr *mm = new mm_attr;
-
-    mm->metal = false;
-    mm_command_queue->push(&mm);
-
-    // there is an mm at the metal part
-    if (mm_command_queue->getCount() > 1)
-    {
-        mm_attr *mm_at_color = nullptr;
-        mm_command_queue->peek(&mm_at_color);
-
-        COLORS mm_color = color_sensor.get_color();
-        Serial.print("The color is: ");
-        display_color(mm_color);
-
-        if (mm_color == assigned_color)
-        {
-            mm_at_color->right_color = true;
-        }
-        else
-        {
-            mm_at_color->right_color = false;
-        }
-    }
-
-    if (mm_command_queue->getCount() == 2)
-    {
-        mm_attr *return_mm = nullptr;
-
-        if (mm_command_queue->pop(&return_mm))
-        {
-            move_swiveler(*return_mm);
-        }
-
-        delete return_mm;
-    }
-    Serial.println();
-}
-*/
+// Module mod(BLUE, &mm_queue, &color_sensor, &swively, &disk, &lcd);
 
 void setup()
 {
     Serial.begin(9600);
-    module.init();
+    motor_encoder.set_pid_values(.28, 0,.1,.05);
+    // lcd.init();
+    // swively.init();
+    // mm_queue.init();
+    // swively.move_to(NEXT_MODULE);
+    // mod.init();
+    // motor_encoder.set_speed(25);
+    // motor_encoder.turn_on();
+    // swively.move_to_degree(135);
+    motor_encoder.reset_time();
 }
 
 void loop()
 {
-    module.step();
+    // if (Serial.available() > 0) {
+    //     // get incoming byte:
+    //     serialByte= Serial.read();
+    // // Serial.print(serialByte);
+    // // Serial.println(" ");
+    // }
+
+    // if (serialByte == 'g'){
+    //     serialByte = '0';
+    //     color_sensor.calibrate();
+    //     Serial.println("------------------------------");
+    // }
+    // if (serialByte == 's'){
+    //     serialByte = '0';
+    //     Serial.println(color_sensor.color_to_string(color_sensor.get_color()));
+    //     Serial.println("------------------------------");
+    // }
+    // mod.step();
+    if (disk.move_to_next()){ 
+       delay(1000);
+        motor_encoder.reset_time();
+    }
 }

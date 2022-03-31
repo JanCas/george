@@ -5,7 +5,7 @@
 
 
 enum swiveler_position_enum{
-    CLOSED =140,
+    CLOSED =135,
     BUCKET = 70,
     NEXT_MODULE = 25,
 };

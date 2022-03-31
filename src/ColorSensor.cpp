@@ -65,32 +65,32 @@ COLORS ColorSensor::get_color()
 
 bool ColorSensor::is_red(int r, int g, int b)
 {
-    return (r > 698 && r < 785) && (g > 818 && g < 926) && (b > 870 && b < 934);
+    return (r > 805 && r < 852) && (g > 894 && g < 960) && (b > 930 && b < 973);
 }
 
 bool ColorSensor::is_blue(int r, int g, int b)
 {
-    return (r > 842 && r < 994) && (g > 553 && g < 972) && (b > 620 && b < 879);
+    return (r > 863 && r < 995) && (g > 769 && g < 854) && (b > 798 && b < 835);
 }
 
 bool ColorSensor::is_green(int r, int g, int b)
 {
-    return (r > 816 && r < 883) && (g > 487 && g < 696) && (b > 806 && b < 907);
+    return (r > 849 && r < 944) && (g > 678 && g < 752) && (b > 889 && b < 941);
 }
 
 bool ColorSensor::is_brown(int r, int g, int b)
 {
-    return (r > 852 && r < 931) && (g > 843 && g < 916) && (b > 870 && b < 953);
+    return (r > 915 && r < 947) && (g > 888 && g < 947) && (b > 925 && b < 970);
 }
 
 bool ColorSensor::is_yellow(int r, int g, int b)
 {
-    return (r > 515 && r < 672) && (g > 468 && g < 700) && (b > 822 && b < 936);
+    return (r > 708 && r < 772) && (g > 621 && g < 775) && (b > 920 && b < 969);
 }
 
 bool ColorSensor::is_orange(int r, int g, int b)
 {
-    return (r > 581 && r < 690) && (g > 842 && g < 898) && (b > 859 && b < 919);
+    return (r > 721 && r < 783) && (g > 877 && g < 942) && (b > 920 && b < 975);
 }
 
 void ColorSensor::sense()

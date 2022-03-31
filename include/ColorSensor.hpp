@@ -46,7 +46,7 @@ class ColorSensor{
         void turn_off();
 
         int red_pin, blue_pin, green_pin, analogPin;
-        int delayTime = 40; // ms
+        int delayTime = 20; // ms
         int rgb_arr[3];
 
 

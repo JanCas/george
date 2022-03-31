@@ -33,13 +33,12 @@ double MMQueue::num_mm_in_queue()
   {
     // Serial.print(sensor_values[i]);
     // Serial.print('\t');
-    if (sensor_values[i] < 500) {
+    if (sensor_values[i] < 350) {
       count_below_threshold++;
     }
   }
 
-  Serial.println();
 
-  double num_unrounded = (float)(count_below_threshold) / 1.8;
-  return num_unrounded == 0 ? 0.0 : floor(num_unrounded) + 1;
+  double num_unrounded = (float)(count_below_threshold) / 1.6;
+  return round(num_unrounded);
 }
