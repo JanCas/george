@@ -16,7 +16,8 @@ LCD lcd(16,2);
 void setup()
 {
     Serial.begin(9600);
-    motor_encoder.set_pid_values(.28, 0,.1,.05);
+    // motor_encoder.set_pid_values(.28, 0,.1,.05);
+    motor_encoder.set_speed(15);
     // lcd.init();
     // swively.init();
     // mm_queue.init();
@@ -25,7 +26,7 @@ void setup()
     // motor_encoder.set_speed(25);
     // motor_encoder.turn_on();
     // swively.move_to_degree(135);
-    motor_encoder.reset_time();
+    // motor_encoder.reset_time();
 }
 
 void loop()
@@ -48,8 +49,8 @@ void loop()
     //     Serial.println("------------------------------");
     // }
     // mod.step();
-    if (disk.move_to_next()){ 
-       delay(1000);
-        motor_encoder.reset_time();
-    }
+    // if (disk.move_to_next()){ 
+    //    delay(1000);
+        // motor_encoder.reset_time();
+    // }
 }
