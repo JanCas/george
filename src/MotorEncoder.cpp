@@ -85,14 +85,10 @@ bool MotorEncoder::drive_to(int des_pos){
     
     pid(des_pos);
 
-    Serial.print(get_pos());
-    Serial.print(" || ");
-    Serial.print(des_pos);
-    Serial.print(" || ");
-    Serial.println(speed);
 
 
-    if(t - t_start > .5){
+
+    if(t - t_start > 1.5){
         turn_off();
         if (get_pos() == old_pos){
             return true;
@@ -129,6 +125,11 @@ void MotorEncoder::pid(double des){
 
         V = constrain(V, -255., 255.);
         speed = V;
+            Serial.print(pos);
+            Serial.print(" || ");
+    Serial.print(des);
+    Serial.print(" || ");
+    Serial.println(V);
         set_speed(V);
     }
 }
