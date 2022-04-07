@@ -48,6 +48,7 @@ void Disk::update_position(disk_position_enum pos) {
     case END:
         curr_position = COLLECTION;
         next_position = HALL_SENSOR;
+        rotation_num++;
         motor->reset();
         break;
     
@@ -61,5 +62,9 @@ bool Disk::move_to_next() {
 }
 
 void Disk::pause() {
-    
+    motor->turn_off();
+}
+
+void Disk::continue_disk(){
+    motor->reset_time();
 }

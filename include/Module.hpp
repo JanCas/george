@@ -8,6 +8,7 @@
 #include "Swiveler.hpp"
 #include <cppQueue.h>
 #include "LCD.hpp"
+#include "HandSensor.hpp"
 
 struct mm_attr{
     bool metal;
@@ -42,6 +43,7 @@ class Module{
         Swiveler *swively;
         Disk *disk;
         cppQueue *mm_command_queue;
+        HandSensor *hand_sensor;
         // MotorEncoder *shaker_motor;
         LCD *lcd;
 

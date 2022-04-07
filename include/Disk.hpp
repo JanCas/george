@@ -20,7 +20,8 @@ class Disk{
         ~Disk();
 
         bool move_to_next();
-        void pause(); 
+        void pause();
+        void continue_disk();
 
     private:
 
@@ -31,6 +32,8 @@ class Disk{
 
         disk_position_enum curr_position;
         disk_position_enum next_position;
+
+        int rotation_num;
 
         MotorEncoder *motor;
 

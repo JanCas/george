@@ -1,8 +1,8 @@
 #include "Module.hpp"
 
-
-Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
-                Disk *disk, MotorEncoder *shaker_motor,int upstream_io_pin, int downstream_io_pin) {
+Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively,
+               Disk *disk, MotorEncoder *shaker_motor, int upstream_io_pin, int downstream_io_pin)
+{
     this->target_color = target_color;
     this->mm_queue = mm_queue;
     this->color_sensor = color_sensor;
@@ -11,7 +11,7 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     this->disk = disk;
     this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
     // this->shaker_motor = shaker_motor;
-    this->lcd = new LCD(16,2);
+    this->lcd = new LCD(16, 2);
 
     pinMode(upstream_io_pin, OUTPUT);
     pinMode(downstream_io_pin, INPUT);
@@ -20,7 +20,8 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     this->downstream_io_pin = downstream_io_pin;
 }
 
-Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, Disk *disk, LCD *lcd){
+Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, Disk *disk, LCD *lcd)
+{
     this->target_color = target_color;
     this->mm_queue = mm_queue;
     this->color_sensor = color_sensor;
@@ -36,7 +37,8 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     num_contaminants = 0;
 }
 
-Module::~Module() {
+Module::~Module()
+{
     delete mm_queue;
     delete color_sensor;
     delete hall_sensor;
@@ -47,80 +49,98 @@ Module::~Module() {
     delete lcd;
 }
 
-void Module::calibrate() {
-    // all the calibration code    
+void Module::calibrate()
+{
+    // all the calibration code
 }
 
-void Module::init(){
+void Module::init()
+{
     swively->init();
-    // shaker_motor->set_speed(255);
     lcd->init();
     mm_queue->init();
+    hand_sensor->init();
 }
 
-void Module::pause() {
-    if (!running) return;
+void Module::pause()
+{
+    if (!running)
+        return;
 
     digitalWrite(led_pause_pin, HIGH);
+    running = false;
+    disk->pause();
 }
 
-void Module::continue_module(){
-    if (running) return;
+void Module::continue_module()
+{
+    if (running)
+        return;
 
     digitalWrite(led_pause_pin, LOW);
+    running = true;
+    disk->continue_disk();
 }
 
-void Module::step() {
+void Module::step()
+{
 
     int queue_size = mm_queue->num_mm_in_queue();
 
     // check if the queue is full
-    if (queue_size >  max_queue_size){
+    if (queue_size > max_queue_size)
+    {
         send_upstream(true);
     }
 
-    if (check_downstream() && 0){
-        
-    }
-
-    if (is_hand() && 0){
-
-    }
-
-    if (e_stop()){
+    if (check_downstream() || e_stop() || is_hand())
+    {
         pause();
     }
-    else{
+    else
+    {
         continue_module();
     }
-    // if (disk->move_to_next()){
-        // the disk has arrived at the next position and the checking can begin
-        last_color = check_mm();
-        delay(1000);
-    // }
-  
+
+    if (running)
+    {
+        if (disk->move_to_next())
+        {
+            // the disk has arrived at the next position and the checking can begin
+            last_color = check_mm();
+            delay(1000);
+        }
+    }
+
     display_lcd(last_color, queue_size);
 }
 
-bool Module::check_downstream(){
+bool Module::check_downstream()
+{
     return digitalRead(downstream_io_pin) == HIGH;
 }
 
-void Module::send_upstream(bool pause){
-    if (pause){
+void Module::send_upstream(bool pause)
+{
+    if (pause)
+    {
         digitalWrite(upstream_io_pin, HIGH);
-    }else{
+    }
+    else
+    {
         digitalWrite(upstream_io_pin, LOW);
     }
 }
 
-void Module::print_mm(const mm_attr &mm){
+void Module::print_mm(const mm_attr &mm)
+{
     Serial.print(mm.metal);
     Serial.print(" || ");
     Serial.println(mm.right_color);
 }
 
-COLORS Module::check_mm(){
+COLORS Module::check_mm()
+{
 
     COLORS return_color = NOT_A_COLOR;
 
@@ -130,25 +150,30 @@ COLORS Module::check_mm(){
     mm_command_queue->push(&mm);
 
     // there is an mm at the metal part
-    if (mm_command_queue->getCount() > 1){
+    if (mm_command_queue->getCount() > 1)
+    {
         mm_attr *mm_at_color = nullptr;
         mm_command_queue->peek(&mm_at_color);
 
         COLORS color = color_sensor->get_color();
-        return_color = color;  
+        return_color = color;
 
-        if (color == target_color){
+        if (color == target_color)
+        {
             mm_at_color->right_color = true;
         }
-        else if (color == target_color){
+        else if (color == target_color)
+        {
             mm_at_color->right_color = false;
         }
-   } 
+    }
 
-    if (mm_command_queue->getCount() == 2){
+    if (mm_command_queue->getCount() == 2)
+    {
         mm_attr *return_mm = nullptr;
 
-        if (mm_command_queue->pop(&return_mm)){
+        if (mm_command_queue->pop(&return_mm))
+        {
             move_swiveler_and_update_counts(*return_mm);
         }
         delete return_mm;
@@ -157,36 +182,44 @@ COLORS Module::check_mm(){
     return return_color;
 }
 
-void Module::move_swiveler_and_update_counts(const mm_attr &mm_at_swiveler){
-    if (mm_at_swiveler.metal){
+void Module::move_swiveler_and_update_counts(const mm_attr &mm_at_swiveler)
+{
+    if (mm_at_swiveler.metal)
+    {
         swively->move_to(CLOSED);
         num_contaminants++;
         return;
     }
-    if (mm_at_swiveler.right_color){
+    if (mm_at_swiveler.right_color)
+    {
         swively->move_to(BUCKET);
         num_sorted++;
-    } else {
+    }
+    else
+    {
         swively->move_to(NEXT_MODULE);
         num_unsorted++;
     }
 }
 
-void Module::display_queue_size(int queue_size){
+void Module::display_queue_size(int queue_size)
+{
     lcd->clear_row(0);
     lcd->display_message(String(max_queue_size), LEFT, 0);
     lcd->display_message("||", CENTER, 0);
     lcd->display_message(String(queue_size), RIGHT, 0);
 }
 
-void Module::display_mm_color(COLORS color){
+void Module::display_mm_color(COLORS color)
+{
     lcd->clear_row(1);
     lcd->display_message(color_sensor->color_to_string(target_color), LEFT, 1);
     lcd->display_message("||", CENTER, 1);
-    lcd->display_message(color_sensor->color_to_string(color), RIGHT, 1);    
+    lcd->display_message(color_sensor->color_to_string(color), RIGHT, 1);
 }
 
-void Module::display_lcd(COLORS color, int queue_size){
+void Module::display_lcd(COLORS color, int queue_size)
+{
     lcd->clear_row(1);
 
     String queue_string = String(queue_size);
@@ -198,20 +231,21 @@ void Module::display_lcd(COLORS color, int queue_size){
     sorted_string += "|";
     sorted_string += String(num_unsorted);
     sorted_string += "|";
-    sorted_string += String(num_contaminants); 
+    sorted_string += String(num_contaminants);
     lcd->display_message(sorted_string, RIGHT, 0);
 
     String color_string = color_sensor->color_to_string(color);
     color_string += "|";
     color_string += color_sensor->color_to_string(target_color);
     lcd->display_message(color_string, CENTER, 1);
-
 }
 
-bool Module::is_hand(){
-
+bool Module::is_hand()
+{
+    return hand_sensor->is_hand();
 }
 
-bool Module::e_stop(){
+bool Module::e_stop()
+{
     return digitalRead(e_stop_pin) == LOW;
 }

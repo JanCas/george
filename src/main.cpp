@@ -13,11 +13,10 @@ MotorEncoder motor_encoder(12, 11, 10, 2, 3, 380, 12);
 ColorSensor color_sensor(5, 6, 7, A0);
 Disk disk(&motor_encoder);
 Swiveler swively(8);
+HandSensor hand_sensor(A0, 250);
 MMQueue mm_queue((const uint8_t[]){22, 36, 24, 38, 26, 40, 28, 42, 30, 44, 32, 46, 34}, 51);
 LCD lcd(16,2);
 // ConfigParser config((const int[]) {41,43}, (const int[]) {45,47,49}, (const int[]) {51,55});
-
-MotorEncoder motor_encoder(12,11,10,2,3,380,12);
 
 
 void setup(){
