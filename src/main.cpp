@@ -25,5 +25,24 @@ void setup(){
 }
 
 void loop() {
-
+    int hand_value = analogRead(A0);
+    Serial.println(hand_value);
+    if (hand_value > 250){
+        running = false;
+    }
+    if (digitalRead(downstream_pin) == HIGH){
+       running = false;
+       Serial.println("HERE");
+    }
+    if (!running){
+        motor_encoder.turn_off();
+        Serial.println("sending other modules to stop");
+        if (digitalRead(button_pin) == HIGH){
+            running = true;
+            digitalWrite(led_pin, LOW);
+        }
+    }
+    else{
+        motor_encoder.turn_on();
+    }
 }
