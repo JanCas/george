@@ -2,6 +2,7 @@
 
 #include "ConfigParser.hpp"
 #include "MotorEncoder.hpp"
+#include "Module.hpp"
 
 bool running = true;
 int downstream_pin = 8;
