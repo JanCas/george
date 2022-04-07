@@ -1,7 +1,7 @@
 #include "ConfigParser.hpp"
 
 
-ConfigParser::ConfigParser(int adress_pins[], int sorting_color_pins[], int queue_size_pins[]) {
+ConfigParser::ConfigParser(const int adress_pins[], const int sorting_color_pins[], const int queue_size_pins[]) {
     this->adress_pins = adress_pins;
     this->sorting_color_pins = sorting_color_pins;
     this->queue_size_pins = queue_size_pins;
@@ -58,9 +58,10 @@ bool ConfigParser::read(int adress){
         break;
     }
 
+    return true;
 }
 
-long int ConfigParser::int_from_pins(int *pins){
+long int ConfigParser::int_from_pins(const int *pins){
     String binary = "";
 
     for (int i = 0; i < sizeof(pins)/sizeof(int); i++)
@@ -77,4 +78,12 @@ long int ConfigParser::int_from_pins(int *pins){
 
 
     return strtol(binary_char, NULL, 2);
+}
+
+COLORS ConfigParser::get_color(){
+    return color;
+}
+
+int ConfigParser::get_queue_size(){
+    return queue_size;  
 }
