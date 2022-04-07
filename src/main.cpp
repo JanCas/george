@@ -25,7 +25,7 @@ void setup(){
 
 void loop() {
     int hand_value = analogRead(A0);
-
+    Serial.println(hand_value);
     if (hand_value > 250){
         running = false;
     }
