@@ -1,8 +1,8 @@
 #include "HallSensor.hpp"
 
 
-HallSensor::HallSensor() {
-    
+HallSensor::HallSensor(int pin) {
+    this->pin = pin;    
 }
 
 HallSensor::~HallSensor() {
@@ -10,9 +10,5 @@ HallSensor::~HallSensor() {
 }
 
 bool HallSensor::sense() {
-    
-}
-
-void HallSensor::calibrate() {
-    
+    return digitalRead(pin) == HIGH;
 }

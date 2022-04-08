@@ -1,7 +1,7 @@
 #include "Module.hpp"
 
 Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively,
-               Disk *disk, MotorEncoder *shaker_motor, int upstream_io_pin, int downstream_io_pin)
+               Disk *disk, int upstream_io_pin, int downstream_io_pin)
 {
     this->target_color = target_color;
     this->mm_queue = mm_queue;
@@ -10,14 +10,16 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     this->swively = swively;
     this->disk = disk;
     this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
-    // this->shaker_motor = shaker_motor;
     this->lcd = new LCD(16, 2);
-
-    pinMode(upstream_io_pin, OUTPUT);
-    pinMode(downstream_io_pin, INPUT);
 
     this->upstream_io_pin = upstream_io_pin;
     this->downstream_io_pin = downstream_io_pin;
+    running = true;
+    max_queue_size = 8;
+
+    num_sorted = 0;
+    num_unsorted = 0;
+    num_contaminants = 0;
 }
 
 Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, Disk *disk, LCD *lcd)
@@ -60,6 +62,8 @@ void Module::init()
     lcd->init();
     mm_queue->init();
     hand_sensor->init();
+    pinMode(upstream_io_pin, OUTPUT);
+    pinMode(downstream_io_pin, INPUT);
 }
 
 void Module::pause()
@@ -85,34 +89,34 @@ void Module::continue_module()
 void Module::step()
 {
 
-    int queue_size = mm_queue->num_mm_in_queue();
+    // int queue_size = mm_queue->num_mm_in_queue();
 
-    // check if the queue is full
-    if (queue_size > max_queue_size)
-    {
-        send_upstream(true);
-    }
+    // // check if the queue is full
+    // if (queue_size > max_queue_size && 0)
+    // {
+    //     send_upstream(true);
+    // }
 
-    if (check_downstream() || e_stop() || is_hand())
-    {
-        pause();
-    }
-    else
-    {
-        continue_module();
-    }
+    // if (check_downstream() || e_stop() || is_hand() && 0)
+    // {
+    //     pause();
+    // }
+    // else
+    // {
+    //     continue_module();
+    // }
 
     if (running)
     {
         if (disk->move_to_next())
         {
             // the disk has arrived at the next position and the checking can begin
-            last_color = check_mm();
+            // last_color = check_mm(); 
             delay(1000);
         }
     }
 
-    display_lcd(last_color, queue_size);
+    display_lcd(last_color, 5);
 }
 
 bool Module::check_downstream()

@@ -14,6 +14,7 @@ Disk::~Disk() {
 bool Disk::move_to(disk_position_enum des_position) {
     if (motor->drive_to(des_position)){
         update_position(des_position);
+        motor->reset_time();
         return true;
     }
     return false;    

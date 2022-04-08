@@ -85,9 +85,6 @@ bool MotorEncoder::drive_to(int des_pos){
     
     pid(des_pos);
 
-
-
-
     if(t - t_start > 1.5){
         turn_off();
         if (get_pos() == old_pos){
