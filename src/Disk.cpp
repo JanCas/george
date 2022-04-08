@@ -12,8 +12,12 @@ Disk::~Disk() {
 }
 
 bool Disk::move_to(disk_position_enum des_position) {
-    if (motor->drive_to(des_position)){
+
+    int des_pos_continous = rotation_num * 360 + des_position;
+
+    if (motor->drive_to(des_pos_continous)){
         update_position(des_position);
+        motor->reset_time();
         return true;
     }
     return false;    
@@ -46,10 +50,9 @@ void Disk::update_position(disk_position_enum pos) {
         break;
     
     case END:
-        curr_position = COLLECTION;
         next_position = HALL_SENSOR;
         rotation_num++;
-        motor->reset();
+        // motor->reset();
         break;
     
     default:

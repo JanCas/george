@@ -20,7 +20,7 @@ class Module{
     public:
 
         Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
-                Disk *disk, MotorEncoder *shaker_motor, int upstream_io_pin, int downstream_io_pin);
+                Disk *disk, int upstream_io_pin, int downstream_io_pin);
         Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, Disk *disk, LCD *lcd);
         ~Module();
 
