@@ -116,6 +116,8 @@ void Module::step()
         }
     }
 
+    // last_color = color_sensor->get_color();
+
     display_lcd(last_color, 5);
 }
 
