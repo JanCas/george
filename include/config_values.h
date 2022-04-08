@@ -15,9 +15,9 @@ int gear_ratio = 380;
 int encoder_counts = 12;
 
 // color_sensing_pins
-int red_pin = 5;
-int green_pin = 6;
-int blue_pin = 7;
+int red_pin = 5; // the orange wire
+int green_pin = 6; // the green wire
+int blue_pin = 7; //  the yellow wire
 int phototransistor_pin = A0;
 
 // swiveler pins
