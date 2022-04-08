@@ -111,12 +111,11 @@ void Module::step()
         if (disk->move_to_next())
         {
             // the disk has arrived at the next position and the checking can begin
-            // last_color = check_mm(); 
+            last_color = check_mm(); 
             delay(1000);
+            disk->reset_time();
         }
     }
-
-    // last_color = color_sensor->get_color();
 
     display_lcd(last_color, 5);
 }

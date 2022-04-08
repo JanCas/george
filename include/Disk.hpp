@@ -22,6 +22,7 @@ class Disk{
         bool move_to_next();
         void pause();
         void continue_disk();
+        void reset_time();
 
     private:
 
