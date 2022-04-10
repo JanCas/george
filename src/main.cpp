@@ -23,7 +23,6 @@ void setup(){
     Serial.begin(9600);
     motor_encoder.set_pid_values(K_p, K_d,K_i,alpha);
     mod.init();
-    // Serial.print("Setup done");
 }
 
 void loop() {
