@@ -17,6 +17,13 @@ void LCD::init(){
     lcd->backlight();
 }
 
+void LCD::clear(){
+    for (int i = 0; i < height; i++)
+    {
+        clear_row(i);
+    }   
+}
+
 void LCD::display_message(String message, ALIGNMENT_ENUM alignment, int row) {
 
     switch(alignment){
@@ -47,4 +54,12 @@ void LCD::display_center_aligned(String message, int row){
 void LCD::display_right_aligned(String message, int row){
     lcd->setCursor(width-message.length(), row);
     lcd->print(message);
+}
+
+void LCD::clear_row(int row){
+    for (int i = 0; i < width; i++)
+    {
+        lcd->setCursor(i, row);
+        lcd->print(" ");
+    }
 }

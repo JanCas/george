@@ -20,6 +20,8 @@ class LCD{
 
         void init();
         void display_message(String message, ALIGNMENT_ENUM alignment, int row);
+        void clear_row(int row);
+        void clear();
 
     private:
 

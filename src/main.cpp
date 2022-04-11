@@ -1,29 +1,34 @@
 #include <Arduino.h>
 
-#include "cppQueue.h"
+#include "config_values.h"
+#include "ConfigParser.hpp"
 #include "MotorEncoder.hpp"
 #include "Module.hpp"
-#include "Disk.hpp"
-#include "Swiveler.hpp"
-#include <PID_v1.h>
-#include <PID_AutoTune_v0.h>
-#include <LCD.hpp>
-#include <QTRSensors.h>
-#include "MMQueue.hpp"
 
-bool running = false;
+MotorEncoder motor_encoder(ena_pin, in1_pin, in2_pin, encoder_1_pin, encoder_2_pin, gear_ratio, encoder_counts);
+ColorSensor color_sensor(red_pin, green_pin, blue_pin, phototransistor_pin);
+Disk disk(&motor_encoder);
+Swiveler swively(swiveler_pin);
+HandSensor hand_sensor(hand_sensor_pin, threshold_hand_sensor);
+MMQueue mm_queue(mm_queue_pins, emitter_pin);
+HallSensor hall_sensor(hall_sensor_pin);
 
-MotorEncoder motor_encoder(12, 11, 10, 20, 21, 380, 12);
+ConfigParser config(module_adress, adress_pins, sorting_color_pins, queue_size_pins);
+Module mod(BLUE, &mm_queue, &color_sensor, &hall_sensor, &swively, &disk, &config, upstream_pin,downstram_pin);
 
-double pos_des = 72.5;
-
-void setup()
-{
+void setup(){
     Serial.begin(9600);
+    // motor_encoder.set_pid_values(K_p, K_d,K_i,alpha);
+    // mod.init();
+    // Serial.print("Setup done");
 }
 
-void loop()
-{
-
-    // motor_encoder.drive_to(pos_des); 
+void loop() {
+    // mod.step();
+    if (config.read()){
+        Serial.print(config.get_color());
+        Serial.print(" || ");
+        Serial.println(config.get_queue_size());
+        delay(1000);
+    }
 }

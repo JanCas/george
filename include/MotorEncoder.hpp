@@ -70,6 +70,12 @@ class MotorEncoder{
         bool drive_to(int degrees);
 
         double set_init_speed(double speed);
+        void set_pid_values(double Kp, double Kd, double Ki, double alpha);
+
+        void reset_time() {
+            t_old = micros() / 1000000.0;
+            t_start = t_old;
+        }
 
     private:
 
@@ -97,10 +103,11 @@ class MotorEncoder{
         double normalize_speed(double speed);
 
         void pid(double des);
-
+        
+        double t_start;
         double t_old;
-        double T_interval = .01;
-        double Kp = 4, Kd = .7, Ki = 3.15;
+        double T_interval = .001;
+        double Kp, Kd, Ki;
         double error_old, dError_filt_old;
         double delta_t;
         double error;
@@ -111,8 +118,8 @@ class MotorEncoder{
         unsigned long t_ms;
         double t;
         double alpha;
-        double step_time = .6;
         double pos;
+        double old_pos;
 };
 
 #endif /* BADE85DE_23EB_439C_B233_928A4F2E5B39 */

@@ -7,7 +7,7 @@
 class MMQueue{
 
     public:
-        MMQueue(int max_queue_size, const uint8_t sensor_pins[], int emitter_pin);
+        MMQueue( const uint8_t sensor_pins[], int emitter_pin);
         ~MMQueue();
 
         /**
@@ -25,7 +25,6 @@ class MMQueue{
         void init();
 
     private:
-        int max_queue_size;
         int num_sensors;
 
         const uint8_t *sensor_pins;

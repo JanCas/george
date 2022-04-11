@@ -1,162 +1,240 @@
 #include "Module.hpp"
 
-
-Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
-                DashBoard *dash_board, Disk *disk, MotorEncoder *shaker_motor,int upstream_io_pin, int downstream_io_pin) {
+Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively,
+               Disk *disk, ConfigParser *config_parser,int upstream_io_pin, int downstream_io_pin)
+{
     this->target_color = target_color;
     this->mm_queue = mm_queue;
     this->color_sensor = color_sensor;
     this->hall_sensor = hall_sensor;
     this->swively = swively;
-    this->dash_board = dash_board;
     this->disk = disk;
     this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
-    this->shaker_motor = shaker_motor;
-
-    pinMode(upstream_io_pin, OUTPUT);
-    pinMode(downstream_io_pin, INPUT);
+    this->lcd = new LCD(16, 2);
+    this->config_parser = config_parser;
 
     this->upstream_io_pin = upstream_io_pin;
     this->downstream_io_pin = downstream_io_pin;
+    running = true;
+
+    num_sorted = 0;
+    num_unsorted = 0;
+    num_contaminants = 0;
 }
 
-
-
-Module::~Module() {
+Module::~Module()
+{
     delete mm_queue;
     delete color_sensor;
     delete hall_sensor;
     delete swively;
-    delete dash_board;
     delete mm_command_queue;
     delete disk;
-    delete shaker_motor;
+    // delete shaker_motor;
+    delete lcd;
+    delete config_parser;
 }
 
-void Module::calibrate() {
-    // all the calibration code    
+void Module::calibrate()
+{
+    // all the calibration code
 }
 
-void Module::init(){
+void Module::init()
+{
     swively->init();
-    shaker_motor->set_speed(255);
+    lcd->init();
+    mm_queue->init();
+    hand_sensor->init();
+    pinMode(upstream_io_pin, OUTPUT);
+    pinMode(downstream_io_pin, INPUT);
 }
 
-void Module::pause() {
-    if (!running) return;
+void Module::pause()
+{
+    if (!running)
+        return;
+
+    digitalWrite(led_pause_pin, HIGH);
+    running = false;
+    disk->pause();
 }
 
-void Module::continue_module(){
-    if (running) return;
+void Module::continue_module()
+{
+    if (running)
+        return;
+
+    digitalWrite(led_pause_pin, LOW);
+    running = true;
+    disk->continue_disk();
 }
 
-void Module::step() {
+void Module::step()
+{
 
-    // check if the queue is full
-    if (mm_queue->is_full() && 0){
-        send_upstream(true);
+    // int queue_size = mm_queue->num_mm_in_queue();
+
+    // // check if the queue is full
+    // if (queue_size > max_queue_size && 0)
+    // {
+    //     send_upstream(true);
+    // }
+
+    // if (check_downstream() || e_stop() || is_hand() && 0)
+    // {
+    //     pause();
+    // }
+    // else
+    // {
+    //     continue_module();
+    // }
+
+    if (running)
+    {
+        if (disk->move_to_next())
+        {
+            // the disk has arrived at the next position and the checking can begin
+            last_color = check_mm(); 
+            delay(1000);
+            disk->reset_time();
+        }
     }
 
-    if (check_downstream() && 0){
-        
-    }
-
-    if (is_hand() && 0){
-
-    }
-
-    if (e_stop() && 0){
-        
-    }
-
-    if (disk->move_to_next()){
-        // the disk has arrived at the next position and the checking can begin
-        check_mm();
-    }
+    display_lcd(last_color, 5);
 }
 
-bool Module::check_downstream(){
+bool Module::check_downstream()
+{
     return digitalRead(downstream_io_pin) == HIGH;
 }
 
-void Module::send_upstream(bool pause){
-    if (pause){
+void Module::send_upstream(bool pause)
+{
+    if (pause)
+    {
         digitalWrite(upstream_io_pin, HIGH);
-    }else{
+    }
+    else
+    {
         digitalWrite(upstream_io_pin, LOW);
     }
 }
 
-void Module::print_mm(const mm_attr &mm){
+void Module::print_mm(const mm_attr &mm)
+{
     Serial.print(mm.metal);
     Serial.print(" || ");
     Serial.println(mm.right_color);
 }
 
-void Module::check_mm(){
+COLORS Module::check_mm()
+{
+
+    COLORS return_color = NOT_A_COLOR;
 
     mm_attr *mm = new mm_attr;
 
-    Serial.println("is it metal? ");
-    while (Serial.available() == 0){}
-
-    char x = Serial.read();
-    if (x == 'y'){
-        mm -> metal = true;
-    }
-    else if (x == 'n'){
-        mm -> metal = false;
-    }
+    mm->metal = false;
     mm_command_queue->push(&mm);
 
     // there is an mm at the metal part
-    if (mm_command_queue->getCount() > 1){
-        Serial.println("Is the mm the correct color");
+    if (mm_command_queue->getCount() > 1)
+    {
         mm_attr *mm_at_color = nullptr;
         mm_command_queue->peek(&mm_at_color);
 
-        while (Serial.available() == 0){}
+        COLORS color = color_sensor->get_color();
+        return_color = color;
 
-        x = Serial.read();
-
-        if (x == 'y'){
+        if (color == target_color)
+        {
             mm_at_color->right_color = true;
         }
-        else if (x == 'n'){
+        else if (color == target_color)
+        {
             mm_at_color->right_color = false;
         }
-   } 
+    }
 
-    if (mm_command_queue->getCount() == 2){
+    if (mm_command_queue->getCount() == 2)
+    {
         mm_attr *return_mm = nullptr;
 
-        print_mm(*mm);
-
-        if (mm_command_queue->pop(&return_mm)){
-            move_swiveler(*return_mm);         
+        if (mm_command_queue->pop(&return_mm))
+        {
+            move_swiveler_and_update_counts(*return_mm);
         }
-
         delete return_mm;
     }
-    Serial.println();
+
+    return return_color;
 }
 
-void Module::move_swiveler(const mm_attr &mm_at_swiveler){
-    if (mm_at_swiveler.metal){
+void Module::move_swiveler_and_update_counts(const mm_attr &mm_at_swiveler)
+{
+    if (mm_at_swiveler.metal)
+    {
         swively->move_to(CLOSED);
+        num_contaminants++;
         return;
     }
-    if (mm_at_swiveler.right_color){
+    if (mm_at_swiveler.right_color)
+    {
         swively->move_to(BUCKET);
-    } else {
+        num_sorted++;
+    }
+    else
+    {
         swively->move_to(NEXT_MODULE);
+        num_unsorted++;
     }
 }
 
-// bool Module::is_hand(){
+void Module::display_queue_size(int queue_size)
+{
+    lcd->clear_row(0);
+    lcd->display_message(String(max_queue_size), LEFT, 0);
+    lcd->display_message("||", CENTER, 0);
+    lcd->display_message(String(queue_size), RIGHT, 0);
+}
 
-// }
+void Module::display_mm_color(COLORS color)
+{
+    lcd->clear_row(1);
+    lcd->display_message(color_sensor->color_to_string(target_color), LEFT, 1);
+    lcd->display_message("||", CENTER, 1);
+    lcd->display_message(color_sensor->color_to_string(color), RIGHT, 1);
+}
 
-// bool Module::e_stop(){
+void Module::display_lcd(COLORS color, int queue_size)
+{
+    lcd->clear_row(1);
 
-// }
+    String queue_string = String(queue_size);
+    queue_string += "|";
+    queue_string += String(max_queue_size);
+    lcd->display_message(queue_string, LEFT, 0);
+
+    String sorted_string = String(num_sorted);
+    sorted_string += "|";
+    sorted_string += String(num_unsorted);
+    sorted_string += "|";
+    sorted_string += String(num_contaminants);
+    lcd->display_message(sorted_string, RIGHT, 0);
+
+    String color_string = color_sensor->color_to_string(color);
+    color_string += "|";
+    color_string += color_sensor->color_to_string(target_color);
+    lcd->display_message(color_string, CENTER, 1);
+}
+
+bool Module::is_hand()
+{
+    return hand_sensor->is_hand();
+}
+
+bool Module::e_stop()
+{
+    return digitalRead(e_stop_pin) == LOW;
+}

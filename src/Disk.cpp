@@ -12,11 +12,18 @@ Disk::~Disk() {
 }
 
 bool Disk::move_to(disk_position_enum des_position) {
-    if (motor->drive_to(des_position)){
+
+    int des_pos_continous = rotation_num * 360 + des_position;
+
+    if (motor->drive_to(des_pos_continous)){
         update_position(des_position);
         return true;
     }
     return false;    
+}
+
+void Disk::reset_time(){
+    motor->reset_time();
 }
 
 void Disk::update_position(disk_position_enum pos) {
@@ -46,9 +53,9 @@ void Disk::update_position(disk_position_enum pos) {
         break;
     
     case END:
-        curr_position = COLLECTION;
         next_position = HALL_SENSOR;
-        motor->reset();
+        rotation_num++;
+        // motor->reset();
         break;
     
     default:
@@ -57,11 +64,13 @@ void Disk::update_position(disk_position_enum pos) {
 }
 
 bool Disk::move_to_next() {
-    Serial.print("moving disk to: ");
-    Serial.println(next_position);
     return move_to(next_position);
 }
 
 void Disk::pause() {
-    
+    motor->turn_off();
+}
+
+void Disk::continue_disk(){
+    motor->reset_time();
 }

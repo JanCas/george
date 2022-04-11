@@ -85,11 +85,11 @@ bool MotorEncoder::drive_to(int des_pos){
     
     pid(des_pos);
 
-    Serial.print("pos: ");
-    Serial.println(get_pos());
-
-    if (abs(des_pos - get_pos()) < 10){ // as long as the position is within one degree and the abs(velocity) is less then 3 
-        return true;
+    if(t - t_start > 1.5){
+        turn_off();
+        if (get_pos() == old_pos){
+            return true;
+        }
     }
     return false;
 }
@@ -118,13 +118,22 @@ void MotorEncoder::pid(double des){
         dError_filt_old = dErrordtFilt;
         error_old = error;
         t_old = t;
-
-        if (t > step_time){
-            V = 0;
-        }
+        old_pos = pos;
 
         V = constrain(V, -255., 255.);
-
+        speed = V;
+            Serial.print(pos);
+            Serial.print(" || ");
+    Serial.print(des);
+    Serial.print(" || ");
+    Serial.println(V);
         set_speed(V);
     }
+}
+
+void MotorEncoder::set_pid_values(double Kp, double Kd, double Ki, double alpha){
+    this->alpha = alpha;
+    this->Kp = Kp;
+    this->Kd = Kd;
+    this->Ki = Ki;
 }

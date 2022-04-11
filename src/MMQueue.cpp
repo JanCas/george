@@ -1,8 +1,7 @@
 #include "MMQueue.hpp"
 
-MMQueue::MMQueue(int max_queue_size, const uint8_t sensor_pins[], int emitter_pin)
+MMQueue::MMQueue(const uint8_t sensor_pins[], int emitter_pin)
 {
-  this->max_queue_size = max_queue_size;
   this->sensor_pins = sensor_pins;
   this->emitter_pin = emitter_pin;
   this->qtr_sensor = new QTRSensors();
@@ -24,11 +23,6 @@ void MMQueue::init()
   // sensor_values = new uint16_t[num_sensors];
 }
 
-bool MMQueue::is_full()
-{
-  return num_mm_in_queue() > max_queue_size;
-}
-
 double MMQueue::num_mm_in_queue()
 {
   qtr_sensor->read(sensor_values);
@@ -39,13 +33,12 @@ double MMQueue::num_mm_in_queue()
   {
     // Serial.print(sensor_values[i]);
     // Serial.print('\t');
-    if (sensor_values[i] < 500) {
+    if (sensor_values[i] < 350) {
       count_below_threshold++;
     }
   }
 
-  Serial.println();
 
-  double num_unrounded = (float)(count_below_threshold) / 1.8;
-  return num_unrounded == 0 ? 0.0 : floor(num_unrounded) + 1;
+  double num_unrounded = (float)(count_below_threshold) / 1.6;
+  return round(num_unrounded);
 }
