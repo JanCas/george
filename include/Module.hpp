@@ -9,6 +9,7 @@
 #include <cppQueue.h>
 #include "LCD.hpp"
 #include "HandSensor.hpp"
+#include "ConfigParser.hpp"
 
 struct mm_attr{
     bool metal;
@@ -20,8 +21,7 @@ class Module{
     public:
 
         Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
-                Disk *disk, int upstream_io_pin, int downstream_io_pin);
-        Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, Disk *disk, LCD *lcd);
+                Disk *disk, ConfigParser *ConfigParser, int upstream_io_pin, int downstream_io_pin);
         ~Module();
 
         void calibrate();
@@ -31,6 +31,7 @@ class Module{
     private:
 
         bool running;
+        bool started;
 
         COLORS target_color;
         COLORS last_color;
@@ -46,6 +47,8 @@ class Module{
         HandSensor *hand_sensor;
         // MotorEncoder *shaker_motor;
         LCD *lcd;
+        ConfigParser *config_parser;
+
 
         int upstream_io_pin;
         int downstream_io_pin;

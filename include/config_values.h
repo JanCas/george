@@ -41,4 +41,11 @@ double K_d = .19;
 double K_i = 0;
 double alpha = 1;
 
+// module config
+int module_adress = 0;
+const int adress_pins[] = {41, 39};
+const int sorting_color_pins[] = {47,45,43};
+const int queue_size_pins[] = {53,51,49};
+
+
 #endif /* E11F7FB5_8CEA_44D4_9EE3_41224012755E */

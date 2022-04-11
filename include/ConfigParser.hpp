@@ -6,12 +6,12 @@
 
 class ConfigParser{
     public:
-        ConfigParser(const int adress_pins[], const int sorting_color_pins[], const int queue_size_pins[]);
+        ConfigParser(int adress, const int adress_pins[], const int sorting_color_pins[], const int queue_size_pins[]);
         ~ConfigParser();
 
         void init();
 
-        bool read(int adress);
+        bool read();
         int get_queue_size();
         COLORS get_color();
 
@@ -22,11 +22,13 @@ class ConfigParser{
         const int *adress_pins;
         const int *sorting_color_pins;
         const int *queue_size_pins;
+        int adress;
 
         COLORS color;
         int queue_size;
 
-        static long int int_from_pins(const int *pins);
+        static int int_from_pins(const int *pins, int length);
+        static int convert(char *binary_char);
 
 };
 
