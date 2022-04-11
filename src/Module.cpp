@@ -16,6 +16,7 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     this->upstream_io_pin = upstream_io_pin;
     this->downstream_io_pin = downstream_io_pin;
     running = true;
+    started = false;
 
     num_sorted = 0;
     num_unsorted = 0;
@@ -70,25 +71,38 @@ void Module::continue_module()
     disk->continue_disk();
 }
 
+void Module::wait_for_config(){
+    if (config_parser->read()){
+        target_color = config_parser->get_color();
+        max_queue_size = config_parser->get_queue_size();
+        started = true;
+    }
+}
+
 void Module::step()
 {
 
-    // int queue_size = mm_queue->num_mm_in_queue();
+    if (!started){
+        wait_for_config();
+        return;
+    }
 
-    // // check if the queue is full
-    // if (queue_size > max_queue_size && 0)
-    // {
-    //     send_upstream(true);
-    // }
+    int queue_size = mm_queue->num_mm_in_queue();
 
-    // if (check_downstream() || e_stop() || is_hand() && 0)
-    // {
-    //     pause();
-    // }
-    // else
-    // {
-    //     continue_module();
-    // }
+    // check if the queue is full
+    if (queue_size > max_queue_size && 0)
+    {
+        send_upstream(true);
+    }
+
+    if (check_downstream() || e_stop() || is_hand() && 0)
+    {
+        pause();
+    }
+    else
+    {
+        continue_module();
+    }
 
     if (running)
     {
@@ -101,7 +115,7 @@ void Module::step()
         }
     }
 
-    display_lcd(last_color, 5);
+    display_lcd(last_color, queue_size);
 }
 
 bool Module::check_downstream()

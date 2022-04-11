@@ -121,6 +121,8 @@ class Module{
         void display_queue_size(int queue_size);
 
         void display_lcd(COLORS color, int queue_size);
+
+        void wait_for_config();
 };
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */
