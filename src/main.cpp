@@ -18,17 +18,11 @@ Module mod(BLUE, &mm_queue, &color_sensor, &hall_sensor, &swively, &disk, &confi
 
 void setup(){
     Serial.begin(9600);
-    // motor_encoder.set_pid_values(K_p, K_d,K_i,alpha);
-    // mod.init();
-    // Serial.print("Setup done");
+    motor_encoder.set_pid_values(K_p, K_d,K_i,alpha);
+    motor_encoder.set_speed(50);
 }
 
 void loop() {
-    // mod.step();
-    if (config.read()){
-        Serial.print(config.get_color());
-        Serial.print(" || ");
-        Serial.println(config.get_queue_size());
-        delay(1000);
-    }
+    if (motor_encoder.get_pos() < 0) motor_encoder.turn_off();
+    Serial.println(motor_encoder.get_pos());
 }
