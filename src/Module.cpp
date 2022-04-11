@@ -38,7 +38,7 @@ Module::~Module()
 
 void Module::calibrate()
 {
-    // all the calibration code
+    disk->drive_to_zero();
 }
 
 void Module::init()
@@ -47,6 +47,7 @@ void Module::init()
     lcd->init();
     mm_queue->init();
     hand_sensor->init();
+    disk->init();
     pinMode(upstream_io_pin, OUTPUT);
     pinMode(downstream_io_pin, INPUT);
 }

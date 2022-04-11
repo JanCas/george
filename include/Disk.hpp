@@ -16,13 +16,15 @@ class Disk{
 
     public:
 
-        Disk(MotorEncoder *motor);
+        Disk(MotorEncoder *motor, int limit_switch_pin);
         ~Disk();
 
         bool move_to_next();
         void pause();
         void continue_disk();
         void reset_time();
+        void drive_to_zero();
+        void init();
 
     private:
 
@@ -35,6 +37,7 @@ class Disk{
         disk_position_enum next_position;
 
         int rotation_num;
+        int limit_switch_pin;
 
         MotorEncoder *motor;
 

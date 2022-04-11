@@ -7,7 +7,7 @@
 
 MotorEncoder motor_encoder(ena_pin, in1_pin, in2_pin, encoder_1_pin, encoder_2_pin, gear_ratio, encoder_counts);
 ColorSensor color_sensor(red_pin, green_pin, blue_pin, phototransistor_pin);
-Disk disk(&motor_encoder);
+Disk disk(&motor_encoder, limit_switch_pin);
 Swiveler swively(swiveler_pin);
 HandSensor hand_sensor(hand_sensor_pin, threshold_hand_sensor);
 MMQueue mm_queue(mm_queue_pins, emitter_pin);
@@ -19,10 +19,10 @@ Module mod(BLUE, &mm_queue, &color_sensor, &hall_sensor, &swively, &disk, &confi
 void setup(){
     Serial.begin(9600);
     motor_encoder.set_pid_values(K_p, K_d,K_i,alpha);
-    motor_encoder.set_speed(50);
+    mod.init();
+    mod.calibrate();
 }
 
 void loop() {
-    if (motor_encoder.get_pos() < 0) motor_encoder.turn_off();
-    Serial.println(motor_encoder.get_pos());
+    mod.step();
 }

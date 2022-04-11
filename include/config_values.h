@@ -14,6 +14,9 @@ int encoder_2_pin = 3;
 int gear_ratio = 380;
 int encoder_counts = 12;
 
+// disk pins
+int limit_switch_pin = 50;
+
 // color_sensing_pins
 int red_pin = 5; // the orange wire
 int green_pin = 6; // the green wire
