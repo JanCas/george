@@ -1,7 +1,7 @@
 #include "Module.hpp"
 
 Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively,
-               Disk *disk, int upstream_io_pin, int downstream_io_pin)
+               Disk *disk, ConfigParser *config_parser,int upstream_io_pin, int downstream_io_pin)
 {
     this->target_color = target_color;
     this->mm_queue = mm_queue;
@@ -11,28 +11,11 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     this->disk = disk;
     this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
     this->lcd = new LCD(16, 2);
+    this->config_parser = config_parser;
 
     this->upstream_io_pin = upstream_io_pin;
     this->downstream_io_pin = downstream_io_pin;
     running = true;
-    max_queue_size = 8;
-
-    num_sorted = 0;
-    num_unsorted = 0;
-    num_contaminants = 0;
-}
-
-Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, Disk *disk, LCD *lcd)
-{
-    this->target_color = target_color;
-    this->mm_queue = mm_queue;
-    this->color_sensor = color_sensor;
-    this->swively = swively;
-    this->disk = disk;
-    this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
-    this->lcd = lcd;
-
-    max_queue_size = 8;
 
     num_sorted = 0;
     num_unsorted = 0;
@@ -49,6 +32,7 @@ Module::~Module()
     delete disk;
     // delete shaker_motor;
     delete lcd;
+    delete config_parser;
 }
 
 void Module::calibrate()

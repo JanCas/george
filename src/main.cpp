@@ -11,21 +11,24 @@ Disk disk(&motor_encoder);
 Swiveler swively(swiveler_pin);
 HandSensor hand_sensor(hand_sensor_pin, threshold_hand_sensor);
 MMQueue mm_queue(mm_queue_pins, emitter_pin);
-LCD lcd(16,2);
 HallSensor hall_sensor(hall_sensor_pin);
 
-Module mod(BLUE, &mm_queue, &color_sensor, &hall_sensor, &swively, &disk, 12,13);
-// ConfigParser config((const int[]) {41,43}, (const int[]) {45,47,49}, (const int[]) {51,55});
-
+ConfigParser config(module_adress, adress_pins, sorting_color_pins, queue_size_pins);
+Module mod(BLUE, &mm_queue, &color_sensor, &hall_sensor, &swively, &disk, &config, upstream_pin,downstram_pin);
 
 void setup(){
-    // config.init();
     Serial.begin(9600);
-    motor_encoder.set_pid_values(K_p, K_d,K_i,alpha);
-    mod.init();
+    // motor_encoder.set_pid_values(K_p, K_d,K_i,alpha);
+    // mod.init();
     // Serial.print("Setup done");
 }
 
 void loop() {
-    mod.step();
+    // mod.step();
+    if (config.read()){
+        Serial.print(config.get_color());
+        Serial.print(" || ");
+        Serial.println(config.get_queue_size());
+        delay(1000);
+    }
 }
