@@ -76,6 +76,10 @@ void Module::wait_for_config(){
     if (config_parser->read()){
         target_color = config_parser->get_color();
         max_queue_size = config_parser->get_queue_size();
+        display_lcd(NOT_A_COLOR, 0);
+    }
+
+    if (digitalRead(start_stop_button_pin)){
         started = true;
     }
 }

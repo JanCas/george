@@ -59,6 +59,7 @@ class Module{
         void sense_metal();
 
         int e_stop_pin;
+        int start_stop_button_pin;
 
         int num_sorted;
         int num_unsorted;
