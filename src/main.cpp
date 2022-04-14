@@ -19,10 +19,14 @@ Module mod(BLUE, &mm_queue, &color_sensor, &hall_sensor, &swively, &disk, &confi
 void setup(){
     Serial.begin(9600);
     motor_encoder.set_pid_values(K_p, K_d,K_i,alpha);
-    mod.init();
-    mod.calibrate();
+    // mod.init();
+    // mod.calibrate();
 }
 
 void loop() {
-    mod.step();
+    // mod.step();
+    if (disk.move_to_next()){
+        delay(2000);
+        disk.reset_time();
+    }
 }
