@@ -62,7 +62,7 @@ bool ConfigParser::read(){
 }
 
 int ConfigParser::int_from_pins(const int *pins, int length){
-    char binary[3];
+    char binary[length];
 
     for (int i = 0; i < length; i++)
     {
