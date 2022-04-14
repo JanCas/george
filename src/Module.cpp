@@ -31,7 +31,7 @@ Module::~Module()
     delete swively;
     delete mm_command_queue;
     delete disk;
-    // delete shaker_motor;
+    delete hopper_motor;
     delete lcd;
     delete config_parser;
 }
