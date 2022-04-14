@@ -62,6 +62,7 @@ void Module::pause()
     if (!running)
         return;
 
+    digitalWrite(sorting_active_led, LOW);
     digitalWrite(sorting_paused_led, HIGH);
     running = false;
     disk->pause();
@@ -73,6 +74,7 @@ void Module::continue_module()
         return;
 
     digitalWrite(sorting_paused_led, LOW);
+    digitalWrite(sorting_active_led, HIGH);
     running = true;
     disk->continue_disk();
 }
