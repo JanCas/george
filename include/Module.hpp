@@ -114,7 +114,7 @@ class Module{
          * @return true e stop button is on
          * @return false e stop button is off 
          */
-        bool e_stop();
+        bool e_stop_activated();
 
         /**
          * @brief sends message to upstream module to pause
@@ -174,6 +174,9 @@ class Module{
          * @return false if the button is not pressed
          */
         bool is_start_stop_button();
+
+        void e_stop_pause();
+
 };
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */

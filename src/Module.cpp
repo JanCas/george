@@ -51,6 +51,10 @@ void Module::init()
     pinMode(upstream_io_pin, OUTPUT);
     pinMode(downstream_io_pin, INPUT);
     pinMode(start_stop_button_pin, INPUT);
+    pinMode(power_led, OUTPUT);
+    pinMode(sorting_active_led, OUTPUT);
+    pinMode(sorting_paused_led, OUTPUT);
+    pinMode(sorting_disabled_led, OUTPUT);
 }
 
 void Module::pause()
@@ -86,6 +90,26 @@ void Module::wait_for_config(){
     }
 }
 
+void Module::e_stop_pause(){
+    disk->pause();
+    digitalWrite(sorting_disabled_led, HIGH);
+    send_upstream_pause();
+
+    lcd->clear();
+    lcd->display_message("E - STOP", CENTER, 0);
+    lcd->display_message("ACTIVATED", CENTER, 1);
+
+    running = false;
+    // once the button is pressed and e_stop is deactivated the disk will continue 
+    while (!is_start_stop_button() && !e_stop_activated()){} 
+    
+    lcd->clear();
+    digitalWrite(sorting_disabled_led, LOW);
+    digitalWrite(sorting_active_led, HIGH);
+    running = true;
+    disk->continue_disk();
+}
+
 void Module::step()
 {
 
@@ -104,7 +128,11 @@ void Module::step()
         send_upstream_continue();
     }
 
-    if (check_downstream() || e_stop() || is_hand())
+    if (e_stop_activated()){
+        e_stop_pause();
+    }
+
+    if (check_downstream() || is_hand())
     {
         pause();
     }
@@ -246,7 +274,7 @@ bool Module::is_hand()
     return hand_sensor->is_hand();
 }
 
-bool Module::e_stop()
+bool Module::e_stop_activated()
 {
     return digitalRead(e_stop_pin) == LOW;
 }
