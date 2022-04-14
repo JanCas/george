@@ -24,14 +24,28 @@ class Module{
                 Disk *disk, ConfigParser *ConfigParser, int upstream_io_pin, int downstream_io_pin);
         ~Module();
 
+        /**
+         * @brief sets the disk position at the beginning
+         */
         void calibrate();
+
+        /**
+         * @brief a single step in the Module
+         * 
+         */
         void step();
+
+        /**
+         * @brief initializes the module - must be called in init()
+         * 
+         */
         void init();
 
     private:
 
         bool running;
         bool started;
+        bool is_top;
 
         COLORS target_color;
         COLORS last_color;
@@ -45,25 +59,38 @@ class Module{
         Disk *disk;
         cppQueue *mm_command_queue;
         HandSensor *hand_sensor;
-        // MotorEncoder *shaker_motor;
+        MotorEncoder *hopper_motor;
         LCD *lcd;
         ConfigParser *config_parser;
 
-
+        // intermodular communication
         int upstream_io_pin;
         int downstream_io_pin;
 
-        int led_pause_pin;
+        // LED communication
+        int power_led;
+        int sorting_active_led;
+        int sorting_paused_led;
+        int sorting_disabled_led;
 
-        void sense_color();
-        void sense_metal();
-
+        // button_pins
         int e_stop_pin;
         int start_stop_button_pin;
 
+        // tracking sorted mm's
         int num_sorted;
         int num_unsorted;
         int num_contaminants;
+
+        /**
+         * @brief senses the color of an mm
+         */
+        void sense_color();
+
+        /**
+         * @brief senses for metal at the hall effect sensor
+         */
+        void sense_metal();
 
         /**
          * @brief checks if the downstream message is to stop the arduino
@@ -115,15 +142,34 @@ class Module{
          */
         void move_swiveler_and_update_counts(const mm_attr &mm_at_swiveler);
 
-        void print_mm(const mm_attr &mm);
+        /**
+         * @brief didplays the top row on the LCD display - this shows the queue and counts
+         * 
+         * @param queue_size 
+         */
+        void display_top_row(int queue_size);
 
-        void display_mm_color(COLORS color);
+        /**
+         * @brief displays the bottom row on the LCD which shows the color
+         * !! warning this is a slow command !!
+         * 
+         * @param color 
+         */
+        void display_bottom_row(COLORS color);
 
-        void display_queue_size(int queue_size);
-
-        void display_lcd(COLORS color, int queue_size);
-
+        /**
+         * @brief reads the config from the other mega 
+         * TODO: still has to be done and tested
+         */
         void wait_for_config();
+
+        /**
+         * @brief checks if the start_stop_button has been depressed 
+         * 
+         * @return true if the button is pressed
+         * @return false if the button is not pressed
+         */
+        bool is_start_stop_button();
 };
 
 #endif /* AEDE749B_8240_4CFB_8C20_3850DA287764 */

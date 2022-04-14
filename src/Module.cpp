@@ -50,6 +50,7 @@ void Module::init()
     disk->init();
     pinMode(upstream_io_pin, OUTPUT);
     pinMode(downstream_io_pin, INPUT);
+    pinMode(start_stop_button_pin, INPUT);
 }
 
 void Module::pause()
@@ -57,7 +58,7 @@ void Module::pause()
     if (!running)
         return;
 
-    digitalWrite(led_pause_pin, HIGH);
+    digitalWrite(sorting_paused_led, HIGH);
     running = false;
     disk->pause();
 }
@@ -67,7 +68,7 @@ void Module::continue_module()
     if (running)
         return;
 
-    digitalWrite(led_pause_pin, LOW);
+    digitalWrite(sorting_paused_led, LOW);
     running = true;
     disk->continue_disk();
 }
@@ -76,10 +77,11 @@ void Module::wait_for_config(){
     if (config_parser->read()){
         target_color = config_parser->get_color();
         max_queue_size = config_parser->get_queue_size();
-        display_lcd(NOT_A_COLOR, 0);
+        display_top_row(0);
+        display_bottom_row(NOT_A_COLOR);
     }
 
-    if (digitalRead(start_stop_button_pin)){
+    if (is_start_stop_button()){
         started = true;
     }
 }
@@ -95,12 +97,12 @@ void Module::step()
     int queue_size = mm_queue->num_mm_in_queue();
 
     // check if the queue is full
-    if (queue_size > max_queue_size && 0)
+    if (queue_size > max_queue_size)
     {
         send_upstream(true);
     }
 
-    if (check_downstream() || e_stop() || is_hand() && 0)
+    if (check_downstream() || e_stop() || is_hand())
     {
         pause();
     }
@@ -115,17 +117,18 @@ void Module::step()
         {
             // the disk has arrived at the next position and the checking can begin
             last_color = check_mm(); 
+            display_bottom_row(last_color);
             delay(1000);
             disk->reset_time();
         }
     }
 
-    display_lcd(last_color, queue_size);
+    display_top_row(5);
 }
 
 bool Module::check_downstream()
 {
-    return digitalRead(downstream_io_pin) == HIGH;
+    return digitalRead(downstream_io_pin);
 }
 
 void Module::send_upstream(bool pause)
@@ -138,13 +141,6 @@ void Module::send_upstream(bool pause)
     {
         digitalWrite(upstream_io_pin, LOW);
     }
-}
-
-void Module::print_mm(const mm_attr &mm)
-{
-    Serial.print(mm.metal);
-    Serial.print(" || ");
-    Serial.println(mm.right_color);
 }
 
 COLORS Module::check_mm()
@@ -210,26 +206,8 @@ void Module::move_swiveler_and_update_counts(const mm_attr &mm_at_swiveler)
     }
 }
 
-void Module::display_queue_size(int queue_size)
+void Module::display_top_row(int queue_size)
 {
-    lcd->clear_row(0);
-    lcd->display_message(String(max_queue_size), LEFT, 0);
-    lcd->display_message("||", CENTER, 0);
-    lcd->display_message(String(queue_size), RIGHT, 0);
-}
-
-void Module::display_mm_color(COLORS color)
-{
-    lcd->clear_row(1);
-    lcd->display_message(color_sensor->color_to_string(target_color), LEFT, 1);
-    lcd->display_message("||", CENTER, 1);
-    lcd->display_message(color_sensor->color_to_string(color), RIGHT, 1);
-}
-
-void Module::display_lcd(COLORS color, int queue_size)
-{
-    lcd->clear_row(1);
-
     String queue_string = String(queue_size);
     queue_string += "|";
     queue_string += String(max_queue_size);
@@ -241,6 +219,12 @@ void Module::display_lcd(COLORS color, int queue_size)
     sorted_string += "|";
     sorted_string += String(num_contaminants);
     lcd->display_message(sorted_string, RIGHT, 0);
+}
+
+
+void Module::display_bottom_row(COLORS color)
+{
+    lcd->clear_row(1);
 
     String color_string = color_sensor->color_to_string(color);
     color_string += "|";
@@ -256,4 +240,12 @@ bool Module::is_hand()
 bool Module::e_stop()
 {
     return digitalRead(e_stop_pin) == LOW;
+}
+
+bool Module::is_start_stop_button(){
+    if (digitalRead(start_stop_button_pin)){
+        delay(50);
+        return true;
+    }
+    return false;
 }
