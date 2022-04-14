@@ -175,6 +175,10 @@ class Module{
          */
         bool is_start_stop_button();
 
+        /**
+         * @brief special case of pause b/c it contains an infinite loop that waits for e_stop to be reset
+         * and the button to be pressed
+         */
         void e_stop_pause();
 
 };
