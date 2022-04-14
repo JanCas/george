@@ -99,7 +99,9 @@ void Module::step()
     // check if the queue is full
     if (queue_size > max_queue_size)
     {
-        send_upstream(true);
+        send_upstream_pause();
+    }else {
+        send_upstream_continue();
     }
 
     if (check_downstream() || e_stop() || is_hand())
@@ -131,14 +133,21 @@ bool Module::check_downstream()
     return digitalRead(downstream_io_pin);
 }
 
-void Module::send_upstream(bool pause)
+void Module::send_upstream_pause()
 {
-    if (pause)
-    {
+    if (is_top){
+        hopper_motor->turn_off();
+    }
+    else {
         digitalWrite(upstream_io_pin, HIGH);
     }
-    else
-    {
+}
+
+void Module::send_upstream_continue()
+{
+    if (is_top){
+        hopper_motor->turn_on();
+    }else{
         digitalWrite(upstream_io_pin, LOW);
     }
 }

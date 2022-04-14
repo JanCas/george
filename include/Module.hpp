@@ -117,10 +117,14 @@ class Module{
         bool e_stop();
 
         /**
-         * @brief sends message to upstream arduino on wether it should pause or run
-         * @param run [in] if true then the upstream arduino will pause, if false the upstream arduino will run
+         * @brief sends message to upstream module to pause
          */
-        void send_upstream(bool pause);
+        void send_upstream_pause();
+
+        /**
+         * @brief tells the upstream module to continue
+         */
+        void send_upstream_continue();
 
         /**
          * @brief is there a hand in the machine
