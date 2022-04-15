@@ -2,6 +2,7 @@
 #define CE506111_D7C2_4F9A_8BBB_A35244951C3F
 
 #include <Arduino.h>
+#include "color_sensor_values.h"
 
 enum COLORS{
     RED,

@@ -65,32 +65,44 @@ COLORS ColorSensor::get_color()
 
 bool ColorSensor::is_red(int r, int g, int b)
 {
-    return (r > 805 && r < 852) && (g > 894 && g < 960) && (b > 930 && b < 973);
+    return (r > r_red_low && r < r_red_high) && 
+            (g > r_green_low && g < r_green_high) && 
+            (b > r_blue_low && b < r_blue_high);
 }
 
 bool ColorSensor::is_blue(int r, int g, int b)
 {
-    return (r > 863 && r < 995) && (g > 769 && g < 854) && (b > 798 && b < 835);
+    return (r > b_red_low && r < b_red_high) && 
+            (g > b_green_low && g < b_green_high) && 
+            (b > b_blue_low && b < b_blue_high);
 }
 
 bool ColorSensor::is_green(int r, int g, int b)
 {
-    return (r > 849 && r < 944) && (g > 678 && g < 752) && (b > 889 && b < 941);
+    return (r > g_red_low && r < g_red_high) && 
+            (g > g_green_low && g < g_green_high) && 
+            (b > g_blue_low && b < g_blue_high);
 }
 
 bool ColorSensor::is_brown(int r, int g, int b)
 {
-    return (r > 915 && r < 947) && (g > 888 && g < 947) && (b > 925 && b < 970);
+    return (r > br_red_low && r < br_red_high) && 
+            (g > br_green_low && g < br_green_high) && 
+            (b > br_blue_low && b < br_blue_high);
 }
 
 bool ColorSensor::is_yellow(int r, int g, int b)
 {
-    return (r > 708 && r < 772) && (g > 621 && g < 775) && (b > 920 && b < 969);
+    return (r > y_red_low && r < y_red_high) && 
+            (g > y_green_low && g < y_green_high) && 
+            (b > y_blue_low && b < y_blue_high);
 }
 
 bool ColorSensor::is_orange(int r, int g, int b)
 {
-    return (r > 721 && r < 783) && (g > 877 && g < 942) && (b > 920 && b < 975);
+    return (r > o_red_low && r < o_red_high) && 
+            (g > o_green_low && g < o_green_high) && 
+            (b > o_blue_low && b < o_blue_high);
 }
 
 void ColorSensor::sense()
@@ -111,9 +123,9 @@ void ColorSensor::sense()
 
 void ColorSensor::turn_red()
 {
-    digitalWrite(red_pin, HIGH);
     digitalWrite(green_pin, LOW);
     digitalWrite(blue_pin, LOW);
+    digitalWrite(red_pin, HIGH);
 }
 
 void ColorSensor::turn_blue()
@@ -124,9 +136,9 @@ void ColorSensor::turn_blue()
 }
 void ColorSensor::turn_green()
 {
+    digitalWrite(blue_pin, LOW);
     digitalWrite(red_pin, LOW);
     digitalWrite(green_pin, HIGH);
-    digitalWrite(blue_pin, LOW);
 }
 
 void ColorSensor::turn_off()
@@ -179,7 +191,7 @@ void ColorSensor::calibrate()
 
         vals[0] = analogRead(analogPin); // read phototransistor and store value
         Serial.print(vals[0]);
-        Serial.print(", "); // print stored value.
+        Serial.print("\t"); // print stored value.
 
         // set LED color to green
         turn_green();
@@ -187,7 +199,7 @@ void ColorSensor::calibrate()
 
         vals[1] = analogRead(analogPin); // read phototransistor and store value
         Serial.print(vals[1]);
-        Serial.print(", "); // print stored value.
+        Serial.print("\t"); // print stored value.
 
         // set LED color to Red
         turn_red();
