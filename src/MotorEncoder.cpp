@@ -77,16 +77,8 @@ void MotorEncoder::cw(){
     }
 }
 
-float MotorEncoder::get_pos_deg(){
-    return deg_per_count * encoder->read();
-}
-
 float MotorEncoder::get_pos(){
-    return encoder->read();
-}
-
-double MotorEncoder::deg_to_count(double deg){
-    return (1.0 / deg_per_count) * deg;
+    return deg_per_count * encoder->read();
 }
 
 bool MotorEncoder::drive_to(int des_pos){
@@ -111,8 +103,6 @@ double MotorEncoder::set_init_speed(double speed){
 void MotorEncoder::pid(double des){
     t_ms = micros(); // current time
     t = t_ms / 1000000.0;
-    double des_deg = des;
-    des = deg_to_count(des);
 
     if (t > t_old + T_interval)
     {
@@ -132,9 +122,6 @@ void MotorEncoder::pid(double des){
 
         V = constrain(V, -255., 255.);
         
-        Serial.print(get_pos_deg());
-        Serial.print(" || ");
-        Serial.print(des_deg);
         Serial.print(" || ");
         Serial.print(pos);
         Serial.print(" || ");

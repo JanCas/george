@@ -96,21 +96,13 @@ class MotorEncoder{
          * @return int returns the normalized speed
          */
         double normalize_speed(double speed);
-        
-        /**
-         * @brief Get the position of the motor in degrees
-         * @return float position of motor in degrees 
-         */
-        float get_pos_deg();
 
         /**
-         * @brief Gets the encoder_counts
+         * @brief Gets the encoder_counts in the deg
          * 
          * @return float 
          */
         float get_pos();
-
-        double deg_to_count(double degrees);
 
         void pid(double des);
         

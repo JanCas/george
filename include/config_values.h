@@ -51,9 +51,9 @@ int emitter_pin = 48;
 
 
 // PID config values
-double K_p = 2.4;
+double K_p = 2.9;
 double K_d = .19;
-double K_i = 0;
+double K_i = 0.0;
 double alpha = 1;
 
 // module config
