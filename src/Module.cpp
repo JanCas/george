@@ -80,12 +80,15 @@ void Module::continue_module()
 }
 
 void Module::wait_for_config(){
-    if (config_parser->read()){
-        target_color = config_parser->get_color();
-        max_queue_size = config_parser->get_queue_size();
-        display_top_row(0);
-        display_bottom_row(NOT_A_COLOR);
-    }
+    // if (config_parser->read()){
+    //     target_color = config_parser->get_color();
+    //     max_queue_size = config_parser->get_queue_size();
+    //     display_top_row(0);
+    //     display_bottom_row(NOT_A_COLOR);
+    // }
+
+    target_color = BLUE;
+    max_queue_size = 8;
 
     if (is_start_stop_button()){
         started = true;
@@ -120,8 +123,8 @@ void Module::step()
         return;
     }
 
-    int queue_size = mm_queue->num_mm_in_queue();
-
+    // int queue_size = mm_queue->num_mm_in_queue();
+    int queue_size = 0;
     // check if the queue is full
     if (queue_size > max_queue_size)
     {
@@ -134,7 +137,8 @@ void Module::step()
         e_stop_pause();
     }
 
-    if (check_downstream() || is_hand())
+    // if (check_downstream() || is_hand() || is_start_stop_button())
+    if (is_start_stop_button())
     {
         pause();
     }
