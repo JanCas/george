@@ -2,7 +2,6 @@
 #define CE506111_D7C2_4F9A_8BBB_A35244951C3F
 
 #include <Arduino.h>
-#include "color_sensor_values.h"
 
 enum COLORS{
     RED,
@@ -25,11 +24,11 @@ class ColorSensor{
         void calibrate();
         String color_to_string(COLORS color);
 
-    private:
-     
         void turn_red();
         void turn_blue();
         void turn_green();
+    private:
+     
         
         bool is_red(int r, int g, int b);
         bool is_green(int r, int g, int b);

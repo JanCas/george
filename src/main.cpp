@@ -14,9 +14,15 @@ MMQueue mm_queue(mm_queue_pins, emitter_pin);
 HallSensor hall_sensor(hall_sensor_pin);
 
 ConfigParser config(module_adress, adress_pins, sorting_color_pins, queue_size_pins);
-Module mod(BLUE, &mm_queue, &color_sensor, &hall_sensor, &swively, &disk, &config, upstream_pin,downstram_pin);
+Module mod(BLUE, &mm_queue, &color_sensor, &hall_sensor, &swively, &disk, &config, upstream_pin, downstram_pin);
 
-void setup(){
+bool running = false;
+
+int num_rotations_for_sensing = 5;
+int i = 0;
+
+void setup()
+{
     Serial.begin(9600);
     motor_encoder.set_pid_values(K_p, K_d,K_i,alpha);
     mod.init();
