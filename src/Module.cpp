@@ -1,7 +1,7 @@
 #include "Module.hpp"
 
 Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively,
-               Disk *disk, ConfigParser *config_parser,int upstream_io_pin, int downstream_io_pin)
+               Disk *disk, ConfigParser *config_parser, HandSensor *hand_sensor, int upstream_io_pin, int downstream_io_pin)
 {
     this->target_color = target_color;
     this->mm_queue = mm_queue;
@@ -12,6 +12,7 @@ Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor
     this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
     this->lcd = new LCD(16, 2);
     this->config_parser = config_parser;
+    this->hand_sensor = hand_sensor;
 
     this->upstream_io_pin = upstream_io_pin;
     this->downstream_io_pin = downstream_io_pin;
@@ -51,10 +52,31 @@ void Module::init()
     pinMode(upstream_io_pin, OUTPUT);
     pinMode(downstream_io_pin, INPUT);
     pinMode(start_stop_button_pin, INPUT);
+    pinMode(e_stop_pin, INPUT);
     pinMode(power_led, OUTPUT);
     pinMode(sorting_active_led, OUTPUT);
     pinMode(sorting_paused_led, OUTPUT);
     pinMode(sorting_disabled_led, OUTPUT);
+    digitalWrite(power_led, HIGH);
+    set_led(PAUSED);
+}
+
+void Module::set_led(LED_STATUS led_status){
+    digitalWrite(sorting_active_led, LOW);
+    digitalWrite(sorting_paused_led, LOW);
+    digitalWrite(sorting_disabled_led, LOW);
+
+    switch (led_status){
+        case ACTIVE:
+            digitalWrite(sorting_active_led, HIGH);
+            break;
+        case PAUSED:
+            digitalWrite(sorting_paused_led, HIGH);
+            break;
+        case DISABLED:
+            digitalWrite(sorting_disabled_led, HIGH);
+            break;
+    }
 }
 
 void Module::pause()
@@ -62,9 +84,9 @@ void Module::pause()
     if (!running)
         return;
 
-    digitalWrite(sorting_active_led, LOW);
-    digitalWrite(sorting_paused_led, HIGH);
+    set_led(PAUSED);
     running = false;
+    send_upstream_pause();
     disk->pause();
 }
 
@@ -73,13 +95,14 @@ void Module::continue_module()
     if (running)
         return;
 
-    digitalWrite(sorting_paused_led, LOW);
-    digitalWrite(sorting_active_led, HIGH);
+    set_led(ACTIVE);
     running = true;
+    send_upstream_continue();
     disk->continue_disk();
 }
 
-void Module::wait_for_config(){
+void Module::wait_for_config()
+{
     // if (config_parser->read()){
     //     target_color = config_parser->get_color();
     //     max_queue_size = config_parser->get_queue_size();
@@ -90,14 +113,18 @@ void Module::wait_for_config(){
     target_color = BLUE;
     max_queue_size = 8;
 
-    if (is_start_stop_button()){
+    if (is_start_stop_button())
+    {
         started = true;
+        Serial.println("Was here");
+        running = true;
     }
 }
 
-void Module::e_stop_pause(){
+void Module::e_stop_pause()
+{
     disk->pause();
-    digitalWrite(sorting_disabled_led, HIGH);
+    set_led(DISABLED);
     send_upstream_pause();
 
     lcd->clear();
@@ -105,20 +132,45 @@ void Module::e_stop_pause(){
     lcd->display_message("ACTIVATED", CENTER, 1);
 
     running = false;
-    // once the button is pressed and e_stop is deactivated the disk will continue 
-    while (!is_start_stop_button() && !e_stop_activated()){} 
-    
+    // once the button is pressed and e_stop is deactivated the disk will continue
+    while (e_stop_activated() || !is_start_stop_button())
+    {
+        // Serial.print(analogRead(e_stop_pin));
+        // Serial.print(" || ");
+        // Serial.println(digitalRead(start_stop_button_pin));
+    }
+
     lcd->clear();
-    digitalWrite(sorting_disabled_led, LOW);
-    digitalWrite(sorting_active_led, HIGH);
+    set_led(ACTIVE);
+    running = true;
+    disk->continue_disk();
+}
+
+void Module::hand_sensor_pause(){
+    disk->pause();
+    set_led(DISABLED);
+    send_upstream_pause();
+
+    lcd->clear();
+    lcd->display_message("HAND", CENTER, 0);
+    lcd->display_message("DETECTED", CENTER, 1);
+    
+    running = false;
+
+    while (is_hand() || !is_start_stop_button()){
+        Serial.println(is_hand());
+    }
+
+    lcd->clear();
+    set_led(ACTIVE);
     running = true;
     disk->continue_disk();
 }
 
 void Module::step()
 {
-
-    if (!started){
+    if (!started)
+    {
         wait_for_config();
         return;
     }
@@ -129,30 +181,38 @@ void Module::step()
     if (queue_size > max_queue_size)
     {
         send_upstream_pause();
-    }else {
+    }
+    else
+    {
         send_upstream_continue();
     }
 
-    if (e_stop_activated()){
+    if (e_stop_activated())
+    {
+        Serial.println("Here");
         e_stop_pause();
     }
 
-    // if (check_downstream() || is_hand() || is_start_stop_button())
-    if (is_start_stop_button())
+    // if (is_hand()){
+    //     hand_sensor_pause();
+    // }
+
+    if ((check_downstream() || is_start_stop_button()) && running)
     {
         pause();
     }
-    else
+    else if (is_start_stop_button() && !running)
     {
         continue_module();
     }
 
     if (running)
     {
+        // Serial.println("Running");
         if (disk->move_to_next())
         {
             // the disk has arrived at the next position and the checking can begin
-            last_color = check_mm(); 
+            last_color = check_mm();
             display_bottom_row(last_color);
             delay(1000);
             disk->reset_time();
@@ -169,19 +229,24 @@ bool Module::check_downstream()
 
 void Module::send_upstream_pause()
 {
-    if (is_top){
+    if (is_top)
+    {
         hopper_motor->turn_off();
     }
-    else {
+    else
+    {
         digitalWrite(upstream_io_pin, HIGH);
     }
 }
 
 void Module::send_upstream_continue()
 {
-    if (is_top){
+    if (is_top)
+    {
         hopper_motor->turn_on();
-    }else{
+    }
+    else
+    {
         digitalWrite(upstream_io_pin, LOW);
     }
 }
@@ -264,7 +329,6 @@ void Module::display_top_row(int queue_size)
     lcd->display_message(sorted_string, RIGHT, 0);
 }
 
-
 void Module::display_bottom_row(COLORS color)
 {
     lcd->clear_row(1);
@@ -282,12 +346,15 @@ bool Module::is_hand()
 
 bool Module::e_stop_activated()
 {
-    return digitalRead(e_stop_pin) == LOW;
+    // Serial.println(analogRead(e_stop_pin));
+    return analogRead(e_stop_pin) < 250;
 }
 
-bool Module::is_start_stop_button(){
-    if (digitalRead(start_stop_button_pin)){
-        delay(50);
+bool Module::is_start_stop_button()
+{
+    if (digitalRead(start_stop_button_pin))
+    {
+        delay(100);
         return true;
     }
     return false;

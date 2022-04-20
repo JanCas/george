@@ -3,7 +3,7 @@
 
 //module_pins
 int downstram_pin = 7;
-int upstream_pin = 9;
+int upstream_pin = 22;
 int e_stop_pin = 1;
 int start_stop_button_pin = 52;
 int power_led = 23;
@@ -13,7 +13,7 @@ int sorting_disabled_led = 29;
 bool is_top = false; // if this is true then we need another motor_encoder
 
 // motor encoder pins
-int ena_pin = 12;
+int ena_pin = 13;
 int in1_pin = 11;
 int in2_pin = 10;
 int encoder_1_pin = 2;
@@ -40,7 +40,7 @@ int swiveler_pin = 8;
 
 // HandSensor
 int hand_sensor_pin = A1;
-int threshold_hand_sensor = 250;
+int threshold_hand_sensor = 300;
 
 // Hall Sensor Pin
 int hall_sensor_pin = 10;

@@ -21,7 +21,7 @@ class Module{
     public:
 
         Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
-                Disk *disk, ConfigParser *ConfigParser, int upstream_io_pin, int downstream_io_pin);
+                Disk *disk, ConfigParser *ConfigParser, HandSensor *hand_sensor, int upstream_io_pin, int downstream_io_pin);
         ~Module();
 
         /**
@@ -42,6 +42,12 @@ class Module{
         void init();
 
     private:
+
+        enum LED_STATUS{
+            ACTIVE,
+            PAUSED,
+            DISABLED
+        };
 
         bool running;
         bool started;
@@ -68,14 +74,14 @@ class Module{
         int downstream_io_pin;
 
         // LED communication
-        int power_led;
-        int sorting_active_led;
-        int sorting_paused_led;
-        int sorting_disabled_led;
+        int power_led = 23;
+        int sorting_active_led = 27;
+        int sorting_paused_led = 29;
+        int sorting_disabled_led = 25;
 
         // button_pins
-        int e_stop_pin;
-        int start_stop_button_pin;
+        int e_stop_pin= A2;
+        int start_stop_button_pin = 52;
 
         // tracking sorted mm's
         int num_sorted;
@@ -180,6 +186,18 @@ class Module{
          * and the button to be pressed
          */
         void e_stop_pause();
+
+        /**
+         * @brief enters an infinte loop until the hand is removed the the button is pressed
+         */
+        void hand_sensor_pause();
+
+        /**
+         * @brief turns the led to the correct color;
+         * 
+         * @param led_status 
+         */
+        void set_led(LED_STATUS led_status);
 
 };
 

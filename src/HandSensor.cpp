@@ -12,8 +12,10 @@ HandSensor::~HandSensor() {
 
 void HandSensor::init() {
     pinMode(analog_pin, INPUT);
+    Serial.println(limit);
 }
 
 bool HandSensor::is_hand() {
+    // Serial.println(analogRead(analog_pin));
     return analogRead(analog_pin) > limit;
 }

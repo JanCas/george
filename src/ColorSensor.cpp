@@ -1,5 +1,5 @@
 #include "ColorSensor.hpp"
-#include "color_sensor_values.h"
+#include "config/color_sensor_values_2.h"
 
 ColorSensor::ColorSensor(int red_pin, int green_pin, int blue_pin, int analogPin)
 {
@@ -183,7 +183,7 @@ void ColorSensor::calibrate()
 
     int vals[3];
 
-    for (int i = 0; i <= 199; i++)
+    for (int i = 0; i <= 50; i++)
     {
 
         // set LED color to blue
