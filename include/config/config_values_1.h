@@ -1,3 +1,5 @@
+#ifndef ABA50877_21A9_4849_9011_E1A2FBA4233F
+#define ABA50877_21A9_4849_9011_E1A2FBA4233F
 #ifndef E11F7FB5_8CEA_44D4_9EE3_41224012755E
 #define E11F7FB5_8CEA_44D4_9EE3_41224012755E
 
@@ -51,7 +53,7 @@ int emitter_pin = 48;
 
 
 // PID config values
-double K_p = 3.3;
+double K_p = 3.0;
 double K_d = .23;
 double K_i = 0.0;
 double alpha = 1;
@@ -64,3 +66,6 @@ const int queue_size_pins[] = {53,51,49};
 
 
 #endif /* E11F7FB5_8CEA_44D4_9EE3_41224012755E */
+
+
+#endif /* ABA50877_21A9_4849_9011_E1A2FBA4233F */

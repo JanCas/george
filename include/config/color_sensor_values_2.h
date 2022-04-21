@@ -34,12 +34,12 @@ int br_blue_low= 1017;
 int br_blue_high= 1020;
 
 // yellow limits
-int y_red_low= 949;
-int y_red_high= 966;
-int y_green_low= 939;
-int y_green_high= 950;
-int y_blue_low= 1017;
-int y_blue_high= 1020;
+int y_red_low= 907;
+int y_red_high= 955;
+int y_green_low= 875;
+int y_green_high= 977;
+int y_blue_low= 1007;
+int y_blue_high= 1022;
 
 // orange limits
 int o_red_low= 945;

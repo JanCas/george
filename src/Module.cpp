@@ -110,7 +110,7 @@ void Module::wait_for_config()
     //     display_bottom_row(NOT_A_COLOR);
     // }
 
-    target_color = BLUE;
+    target_color = YELLOW;
     max_queue_size = 8;
 
     if (is_start_stop_button())
@@ -197,7 +197,7 @@ void Module::step()
     //     hand_sensor_pause();
     // }
 
-    if ((check_downstream() || is_start_stop_button()) && running)
+    if (is_start_stop_button() && running)
     {
         pause();
     }
@@ -214,7 +214,7 @@ void Module::step()
             // the disk has arrived at the next position and the checking can begin
             last_color = check_mm();
             display_bottom_row(last_color);
-            delay(1000);
+            delay(200);
             disk->reset_time();
         }
     }
