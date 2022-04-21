@@ -20,14 +20,11 @@ class Module{
 
     public:
 
-        Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively, 
-                Disk *disk, ConfigParser *ConfigParser, HandSensor *hand_sensor, int upstream_io_pin, int downstream_io_pin);
+        Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively, 
+                Disk *disk, ConfigParser *ConfigParser, HandSensor *hand_sensor, MotorEncoder *hopper_motor,int e_stop_pin, 
+                int start_stop_button_pin, int power_led, int sorting_active_led, int sorting_paused_led, int sorting_disabled_led,
+                int max_queue_size);
         ~Module();
-
-        /**
-         * @brief sets the disk position at the beginning
-         */
-        void calibrate();
 
         /**
          * @brief a single step in the Module
@@ -60,7 +57,6 @@ class Module{
 
         MMQueue *mm_queue;
         ColorSensor *color_sensor;
-        HallSensor *hall_sensor;
         Swiveler *swively;
         Disk *disk;
         cppQueue *mm_command_queue;
@@ -68,10 +64,6 @@ class Module{
         MotorEncoder *hopper_motor;
         LCD *lcd;
         ConfigParser *config_parser;
-
-        // intermodular communication
-        int upstream_io_pin;
-        int downstream_io_pin;
 
         // LED communication
         int power_led = 23;

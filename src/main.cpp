@@ -5,16 +5,22 @@
 #include "MotorEncoder.hpp"
 #include "Module.hpp"
 
+MotorEncoder *hopper_motor = is_top ? new MotorEncoder(enb_pin, in3_pin, in4_pin) : NULL;
+
+// if (is_top){
+//     hopper_motor = new MotorEncoder(enb_pin, in3_pin, in4_pin);
+// }
+
 MotorEncoder motor_encoder(ena_pin, in1_pin, in2_pin, encoder_1_pin, encoder_2_pin, gear_ratio, encoder_counts);
 ColorSensor color_sensor(red_pin, green_pin, blue_pin, phototransistor_pin);
-Disk disk(&motor_encoder, limit_switch_pin);
+Disk disk(&motor_encoder);
 Swiveler swively(swiveler_pin);
 HandSensor hand_sensor(hand_sensor_pin, threshold_hand_sensor);
 MMQueue mm_queue(mm_queue_pins, emitter_pin);
-HallSensor hall_sensor(hall_sensor_pin);
 
 ConfigParser config(module_adress, adress_pins, sorting_color_pins, queue_size_pins);
-Module mod(BLUE, &mm_queue, &color_sensor, &hall_sensor, &swively, &disk, &config, &hand_sensor, upstream_pin, downstram_pin);
+Module mod(BLUE, &mm_queue, &color_sensor, &swively, &disk, &config, &hand_sensor, hopper_motor, e_stop_pin, start_stop_button_pin,
+            power_led, sorting_active_led, sorting_paused_led, sorting_disabled_led);
 
 bool running = false;
 
@@ -26,51 +32,9 @@ void setup()
     Serial.begin(9600);
     motor_encoder.set_pid_values(K_p, K_d,K_i,alpha);
     mod.init();
-    // pinMode(14, OUTPUT);
-    // digitalWrite(14, HIGH);
-    // motor_encoder.set_speed(150);
-    // mod.calibrate();
-    // motor_encoder.set_speed(70);
 }
 
 void loop() {
-    // color_sensor.turn_blue();
-    // delay(1000);
-
-    // color_sensor.turn_green();
-    // delay(1000);
-
-    // color_sensor.turn_red();
-    // delay(5000);
 
     mod.step();
-    // Serial.println(hand_sensor.is_hand());
-    // if (disk.move_to_next()){
-    //     delay(2000);
-    //     disk.reset_time();
-    // }   
-    // if (!running)
-    // {
-    //     if (digitalRead(start_stop_button_pin))
-    //     {
-    //         running = true;
-    //         disk.reset_time();
-    //     }
-    // }
-
-    // if (running)
-    // {
-    //     if (disk.move_to_next())
-    //     {
-    //         if (i >= 1) color_sensor.calibrate();
-    //         delay(2000);
-    //         disk.reset_time();
-    //         i++;
-    //     }
-    //     if (i > num_rotations_for_sensing)
-    //     {
-    //         running=false;
-    //     }
-    // }
-    // motor_encoder.drive_to(-20);
 }

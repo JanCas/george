@@ -22,6 +22,24 @@ MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_pi
     direction_clockwise = true;
 }
 
+MotorEncoder::MotorEncoder(int ena_pin, int in1_pin, int in2_pin){
+    this->ena_pin = ena_pin;
+    this->in1_pin = in1_pin;
+    this->in2_pin = in2_pin;
+
+    this->encoder = NULL;
+
+    pinMode(this->ena_pin, OUTPUT);
+    pinMode(this->in1_pin, OUTPUT);
+    pinMode(this->in2_pin, OUTPUT);
+
+    digitalWrite(this->in1_pin, HIGH);
+    digitalWrite(this->in2_pin, LOW);
+
+    this->speed = 0;
+    direction_clockwise = true;
+}
+
 MotorEncoder::~MotorEncoder() {
     delete this->encoder;
 }

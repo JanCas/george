@@ -4,15 +4,17 @@
 #define E11F7FB5_8CEA_44D4_9EE3_41224012755E
 
 //module_pins
-int downstram_pin = 0;
-int upstream_pin = 22;
-int e_stop_pin = 1;
+int e_stop_pin = A2;
 int start_stop_button_pin = 52;
 int power_led = 23;
 int sorting_active_led = 25;
 int sorting_paused_led = 27;
 int sorting_disabled_led = 29;
 bool is_top = true; // if this is true then we need another motor_encoder
+
+// target color and queue_size
+COLORS target_color = BLUE;
+int max_queue_size = 8;
 
 // motor encoder pins
 int ena_pin = 13;
@@ -24,12 +26,9 @@ int gear_ratio = 380;
 int encoder_counts = 12;
 
 // motor_encoder HOPPER pins;
-int enb_pin;
-int in3_pin;
-int in4_pin;
-
-// disk pins
-int limit_switch_pin = 50;
+int enb_pin = 9;
+int in3_pin = 14;
+int in4_pin = 15;
 
 // color_sensing_pins
 int red_pin = 5; // the orange wire
@@ -43,9 +42,6 @@ int swiveler_pin = 8;
 // HandSensor
 int hand_sensor_pin = A1;
 int threshold_hand_sensor = 300;
-
-// Hall Sensor Pin
-int hall_sensor_pin = 10;
 
 // MM queue
 const uint8_t mm_queue_pins[13] = {22, 36, 24, 38, 26, 40, 28, 42, 30, 44, 32, 46, 34};

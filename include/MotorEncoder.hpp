@@ -18,6 +18,7 @@ class MotorEncoder{
         * @param encoder_b_pin2 
         */
         MotorEncoder(int ena_pin, int in1_pin, int in2_pin, int encoder_pin1, int encoder_pin2, int gear_ratio, int count);
+        MotorEncoder(int ena_pin, int int2_pin, int in3_pin);
         ~MotorEncoder();
 
         /**

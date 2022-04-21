@@ -1,21 +1,30 @@
 #include "Module.hpp"
 
-Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, HallSensor *hall_sensor, Swiveler *swively,
-               Disk *disk, ConfigParser *config_parser, HandSensor *hand_sensor, int upstream_io_pin, int downstream_io_pin)
+Module::Module(COLORS target_color, MMQueue *mm_queue, ColorSensor *color_sensor, Swiveler *swively,
+               Disk *disk, ConfigParser *config_parser, HandSensor *hand_sensor, MotorEncoder *hopper_motor,int e_stop_pin, 
+                int start_stop_button_pin, int power_led, int sorting_active_led, int sorting_paused_led, int sorting_disabled_led,
+                int max_queue_size)
 {
     this->target_color = target_color;
     this->mm_queue = mm_queue;
     this->color_sensor = color_sensor;
-    this->hall_sensor = hall_sensor;
     this->swively = swively;
     this->disk = disk;
     this->mm_command_queue = new cppQueue(sizeof(mm_attr), 2, FIFO, true);
     this->lcd = new LCD(16, 2);
     this->config_parser = config_parser;
     this->hand_sensor = hand_sensor;
+    this->hopper_motor = hopper_motor;
 
-    this->upstream_io_pin = upstream_io_pin;
-    this->downstream_io_pin = downstream_io_pin;
+    this->e_stop_pin = e_stop_pin;
+    this->start_stop_button_pin = start_stop_button_pin;
+    this->power_led = power_led;
+    this->sorting_active_led = sorting_active_led;
+    this->sorting_paused_led = sorting_paused_led;
+    this->sorting_disabled_led = sorting_disabled_led;
+
+    this->max_queue_size = max_queue_size;
+
     running = true;
     started = false;
 
@@ -28,7 +37,6 @@ Module::~Module()
 {
     delete mm_queue;
     delete color_sensor;
-    delete hall_sensor;
     delete swively;
     delete mm_command_queue;
     delete disk;
@@ -37,20 +45,12 @@ Module::~Module()
     delete config_parser;
 }
 
-void Module::calibrate()
-{
-    disk->drive_to_zero();
-}
-
 void Module::init()
 {
     swively->init();
     lcd->init();
     mm_queue->init();
     hand_sensor->init();
-    disk->init();
-    pinMode(upstream_io_pin, OUTPUT);
-    pinMode(downstream_io_pin, INPUT);
     pinMode(start_stop_button_pin, INPUT);
     pinMode(e_stop_pin, INPUT);
     pinMode(power_led, OUTPUT);
@@ -103,20 +103,12 @@ void Module::continue_module()
 
 void Module::wait_for_config()
 {
-    // if (config_parser->read()){
-    //     target_color = config_parser->get_color();
-    //     max_queue_size = config_parser->get_queue_size();
-    //     display_top_row(0);
-    //     display_bottom_row(NOT_A_COLOR);
-    // }
-
-    target_color = YELLOW;
-    max_queue_size = 8;
+    lcd->display_message("Ready", CENTER, 0);
+    lcd->display_message("Press BUtton", CENTER, 1);
 
     if (is_start_stop_button())
     {
         started = true;
-        Serial.println("Was here");
         running = true;
     }
 }
@@ -175,8 +167,11 @@ void Module::step()
         return;
     }
 
-    // int queue_size = mm_queue->num_mm_in_queue();
-    int queue_size = 0;
+    if (is_top){
+        hopper_motor->set_speed(35);
+    }
+
+    int queue_size = mm_queue->num_mm_in_queue(); 
     // check if the queue is full
     if (queue_size > max_queue_size)
     {
@@ -193,9 +188,9 @@ void Module::step()
         e_stop_pause();
     }
 
-    // if (is_hand()){
-    //     hand_sensor_pause();
-    // }
+    if (is_hand()){
+        hand_sensor_pause();
+    }
 
     if (is_start_stop_button() && running)
     {
@@ -219,12 +214,7 @@ void Module::step()
         }
     }
 
-    display_top_row(5);
-}
-
-bool Module::check_downstream()
-{
-    return digitalRead(downstream_io_pin);
+    display_top_row(queue_size);
 }
 
 void Module::send_upstream_pause()
@@ -233,10 +223,6 @@ void Module::send_upstream_pause()
     {
         hopper_motor->turn_off();
     }
-    else
-    {
-        digitalWrite(upstream_io_pin, HIGH);
-    }
 }
 
 void Module::send_upstream_continue()
@@ -244,10 +230,6 @@ void Module::send_upstream_continue()
     if (is_top)
     {
         hopper_motor->turn_on();
-    }
-    else
-    {
-        digitalWrite(upstream_io_pin, LOW);
     }
 }
 

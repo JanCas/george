@@ -5,16 +5,20 @@
 #ifndef E11F7FB5_8CEA_44D4_9EE3_41224012755E
 #define E11F7FB5_8CEA_44D4_9EE3_41224012755E
 
+#include "ColorSensor.hpp"
+
 //module_pins
-int downstram_pin = 0;
-int upstream_pin = 22;
-int e_stop_pin = 1;
+int e_stop_pin = A2;
 int start_stop_button_pin = 52;
 int power_led = 23;
 int sorting_active_led = 25;
 int sorting_paused_led = 27;
 int sorting_disabled_led = 29;
 bool is_top = false; // if this is true then we need another motor_encoder
+
+//target color
+COLORS target_color = GREEN;
+int max_queue_size = 6;
 
 // motor encoder pins
 int ena_pin = 12;
@@ -24,14 +28,6 @@ int encoder_1_pin = 2;
 int encoder_2_pin = 3;
 int gear_ratio = 380;
 int encoder_counts = 12;
-
-// motor_encoder HOPPER pins;
-int enb_pin;
-int in3_pin;
-int in4_pin;
-
-// disk pins
-int limit_switch_pin = 50;
 
 // color_sensing_pins
 int red_pin = 5; // the orange wire
