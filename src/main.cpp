@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "config/config_values_1.h"
+#include "config/config_values_2.h"
 #include "ConfigParser.hpp"
 #include "MotorEncoder.hpp"
 #include "Module.hpp"
@@ -43,34 +43,34 @@ void loop() {
     // color_sensor.turn_red();
     // delay(5000);
 
-    // mod.step();
+    mod.step();
     // Serial.println(hand_sensor.is_hand());
     // if (disk.move_to_next()){
     //     delay(2000);
     //     disk.reset_time();
     // }   
-    if (!running)
-    {
-        if (digitalRead(start_stop_button_pin))
-        {
-            running = true;
-            disk.reset_time();
-        }
-    }
+    // if (!running)
+    // {
+    //     if (digitalRead(start_stop_button_pin))
+    //     {
+    //         running = true;
+    //         disk.reset_time();
+    //     }
+    // }
 
-    if (running)
-    {
-        if (disk.move_to_next())
-        {
-            if (i >= 1) color_sensor.calibrate();
-            delay(2000);
-            disk.reset_time();
-            i++;
-        }
-        if (i > num_rotations_for_sensing)
-        {
-            running=false;
-        }
-    }
+    // if (running)
+    // {
+    //     if (disk.move_to_next())
+    //     {
+    //         if (i >= 1) color_sensor.calibrate();
+    //         delay(2000);
+    //         disk.reset_time();
+    //         i++;
+    //     }
+    //     if (i > num_rotations_for_sensing)
+    //     {
+    //         running=false;
+    //     }
+    // }
     // motor_encoder.drive_to(-20);
 }

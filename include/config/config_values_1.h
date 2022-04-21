@@ -12,7 +12,7 @@ int power_led = 23;
 int sorting_active_led = 25;
 int sorting_paused_led = 27;
 int sorting_disabled_led = 29;
-bool is_top = false; // if this is true then we need another motor_encoder
+bool is_top = true; // if this is true then we need another motor_encoder
 
 // motor encoder pins
 int ena_pin = 13;

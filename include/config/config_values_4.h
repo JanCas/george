@@ -19,7 +19,7 @@ int sorting_disabled_led = 29;
 bool is_top = false; // if this is true then we need another motor_encoder
 
 // motor encoder pins
-int ena_pin = 4;
+int ena_pin = 9;
 int in1_pin = 11;
 int in2_pin = 10;
 int encoder_1_pin = 2;
@@ -57,8 +57,8 @@ int emitter_pin = 48;
 
 
 // PID config values
-double K_p = 3.2;
-double K_d = .23;
+double K_p = 3.35;
+double K_d = .235;
 double K_i = 0.0;
 double alpha = 1;
 
